@@ -8,10 +8,14 @@ const userSchema = new Schema({
   firstname: {
     type: String,
     default: "",
+    required: true,
+    unique: true,
   },
   lastname: {
     type: String,
     default: "",
+    required: true,
+    unique: true,
   },
   admin: {
     type: Boolean,
