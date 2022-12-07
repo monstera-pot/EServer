@@ -7,6 +7,11 @@ var logger = require("morgan");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const aboutusRouter = require("./routes/aboutus");
+const spatiRouter = require("./routes/spätiRouter");
+const favoriteRouter = require("./routes/favoriteRouter");
+
+const mongoose = require("mongoose");
+mongoose.connect("mongodb://localhost:27017/spatiBase");
 
 var app = express();
 
@@ -23,6 +28,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/aboutus", aboutusRouter);
+app.use("/spatis", spatiRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
