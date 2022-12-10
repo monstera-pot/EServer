@@ -24,14 +24,14 @@ spatiRouter
           console.log("Spati added <3", spati);
           res.statusCode = 200;
           res.setHeader("Content-Type", "application/json");
-          res.json(campsite);
+          res.json(spati);
         })
         .catch((err) => next(err));
     }
   )
   .put((req, res) => {
     res.statusCode = 403;
-    res.end("No PUT operations supported on /spati, baby");
+    res.end("No PUT operations supported on /spatis, baby");
   })
   .delete(
     //verifyUser
@@ -47,12 +47,13 @@ spatiRouter
   );
 
 spatiRouter
-  .route("/:spatiId")
+  .route("/:id")
   .get((req, res, next) => {
     //get spati + indications + tags
-    Spati.findById(req.params.spatiId)
-      .populate("comments.author")
-      .then((campsite) => {
+    const { id } = req.params;
+    Spati.findById(id)
+      //      .populate("comments.author")
+      .then((spati) => {
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.json(spati);
@@ -61,21 +62,19 @@ spatiRouter
   })
   .post((req, res) => {
     res.statusCode = 403;
-    res.end(`POST operation not supported on /spatis/${res.params.spatiId}`);
+    res.end(`POST operation not supported on /spatis/${req.params.id}`);
   })
   .put(
     //verify user matches author
     (req, res) => {
       res.statusCode = 403;
-      res.end(
-        `No PUT operations supported on /spatis/${res.params.spatiId}, baby`
-      );
+      res.end(`No PUT operations supported on /spatis/${req.params.id}, baby`);
     }
   )
   .delete(
     //verify if user matches author
     (req, res, next) => {
-      Spati.findByIdAndDelete(req.params.spatiId)
+      Spati.findByIdAndDelete(req.params.id)
         .then((response) => {
           res.statusCode = 200;
           res.setHeader("Content-Type", "application/json");
@@ -88,9 +87,9 @@ spatiRouter
 //Endpoints for /:spatiId/comments
 
 spatiRouter
-  .route("/:spatiId/comments")
+  .route("/:id/comments")
   .get((req, res, next) => {
-    Spati.findById(req.params.spatiId)
+    Spati.findById(req.params.id)
       .populate("comments.author")
       .then((spati) => {
         if (spati) {
@@ -99,7 +98,7 @@ spatiRouter
           res.setHeader("Content-Type", "application/json");
           res.json(spati.comments);
         } else {
-          err = new Error(`Spati ${req.params.spatiId} not found`);
+          err = new Error(`Spati ${req.params.id} not found`);
           err.status = 404;
           return next(err);
         }
@@ -109,7 +108,7 @@ spatiRouter
   .post(
     //add verify user
     (req, res, next) => {
-      Spati.findById(req.params.spatiId)
+      Spati.findById(req.params.id)
         .then((spati) => {
           if (spati) {
             req.body.author = req.user._id; //saves comment + getting user id to populate author's field
@@ -123,7 +122,7 @@ spatiRouter
               })
               .catch((err) => next(err));
           } else {
-            err = new Error(`Spati ${req.params.spatiId} not found`);
+            err = new Error(`Spati ${req.params.id} not found`);
             err.status = 404;
             return next(err);
           }
@@ -134,11 +133,11 @@ spatiRouter
   .put((req, res) => {
     res.statusCode = 403;
     res.end(
-      `PUT operation not supportted on /campsites/${req.params.spatiId}/comments`
+      `PUT operation not supportted on /spatis/${req.params.id}/comments`
     );
   })
   .delete((req, res, next) => {
-    Spati.findById(req.params.spatiId)
+    Spati.findById(req.params.id)
       .then((spati) => {
         if (spati) {
           for (let i = spati.comments.length - 1; i >= 0; i--) {
@@ -153,7 +152,7 @@ spatiRouter
             })
             .catch((err) => next(err));
         } else {
-          err = new Error(`Spati ${req.params.spatiId} not found`);
+          err = new Error(`Spati ${req.params.id} not found`);
           err.status = 404;
           return next(err);
         }

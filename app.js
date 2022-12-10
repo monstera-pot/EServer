@@ -11,7 +11,17 @@ const spatiRouter = require("./routes/spätiRouter");
 const favoriteRouter = require("./routes/favoriteRouter");
 
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost:27017/spatiBase");
+mongoose
+  .connect("mongodb://localhost:27017/spatiBase", {
+    useNewUrlParser: true,
+  })
+  .then(() => {
+    console.log("Connection OPEN");
+  })
+  .catch((err) => {
+    console.log("ERROR NOOO");
+    console.log(err);
+  });
 
 var app = express();
 
