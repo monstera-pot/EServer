@@ -13,11 +13,52 @@ userRouter.get("/", function (req, res, next) {
 });
 
 //New user registration
-userRouter.post("/signup", (req, res) => {
+userRouter.post("/signup", (req, res, next) => {
   //New User
-  //Check if user exists already
-  //if user is successfully created we access user document
+  console.log(req.body);
+  //User.register(new User({ username: req.body.fisrtname }), (err, user) => {
+  const newUser = new User({ firstname: req.body.firstname });
+
+  if (err) {
+    res.statusCode = 500;
+    res.setHeader("Content-Type", "application/json");
+    res.json({ err: err });
+  } else {
+    if (req.body.fisrtname) {
+      user.fisrtname = req.body.firstname;
+    }
+    if (req.body.lastname) {
+      user.lastname = req.body.lastname;
+    }
+    user.save((err) => {
+      if (err) {
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.json({ err: err });
+        return;
+      }
+    });
+  }
 });
+// User.find({ firstname: req.body.firstname }).then((user) => {
+//   if (user) {
+//     res.statusCode = 400;
+//     res.send("user already exists ;)");
+//   } else {
+//     const newUser = new User({
+//       username: req.body.username,
+//       lastname: req.body.lastname,
+//     });
+//     newUser.save();
+//     res.statusCode = 200;
+//     res.json(newUser);
+//   }
+// });
+//Check if user exists already
+
+//User.findOne({ "username": })
+//if user is successfully created we access user document
+// });
 
 userRouter.get("/logout", (req, res) => {
   //req.session.destroy
