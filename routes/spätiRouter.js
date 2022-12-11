@@ -90,7 +90,7 @@ spatiRouter
   .route("/:id/comments")
   .get((req, res, next) => {
     Spati.findById(req.params.id)
-      .populate("comments.author")
+      .populate("comments")
       .then((spati) => {
         if (spati) {
           //check if it exists = non null
@@ -111,7 +111,7 @@ spatiRouter
       Spati.findById(req.params.id)
         .then((spati) => {
           if (spati) {
-            req.body.author = req.user._id; //saves comment + getting user id to populate author's field
+            //req.body.author = req.user._id; //saves comment + getting user id to populate author's field
             spati.comments.push(req.body);
             spati
               .save() //saving to db

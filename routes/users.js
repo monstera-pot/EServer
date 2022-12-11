@@ -1,24 +1,29 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const userRouter = express.Router();
+const User = require("../models/user");
 
 /* GET users listing. */
-router.get("/", function (req, res, next) {
-  res.send("helloUsers");
-  //show user
+userRouter.get("/", function (req, res, next) {
+  //show all users
+  User.find().then((users) => {
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.json(users);
+  });
 });
 
 //New user registration
-router.post("/signup", (req, res) => {
+userRouter.post("/signup", (req, res) => {
   //New User
   //Check if user exists already
   //if user is successfully created we access user document
 });
 
-router.get("/logout", (req, res) => {
+userRouter.get("/logout", (req, res) => {
   //req.session.destroy
   //check if user is logged in
 });
 
 //Third party authentication?
 
-module.exports = router;
+module.exports = userRouter;
