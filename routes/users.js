@@ -7,8 +7,10 @@ userRouter.get("/", function (req, res, next) {
   //show all users
   User.find().then((users) => {
     res.statusCode = 200;
-    res.setHeader("Content-Type", "application/json");
-    res.json(users);
+    //res.setHeader("Content-Type", "application/json");
+    //res.json(users);
+    console.log(users);
+    res.render("users.ejs", { users });
   });
 });
 
@@ -24,8 +26,8 @@ userRouter.post("/signup", (req, res, next) => {
     res.setHeader("Content-Type", "application/json");
     res.json({ err: err });
   } else {
-    if (req.body.fisrtname) {
-      user.fisrtname = req.body.firstname;
+    if (req.body.firstname) {
+      user.firstname = req.body.firstname;
     }
     if (req.body.lastname) {
       user.lastname = req.body.lastname;

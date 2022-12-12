@@ -10,6 +10,7 @@ spatiRouter
     Spati.find()
       .then((spatis) => {
         res.statusCode = 200;
+        //console.log(spatis);
         res.setHeader("Content-Type", "application/json");
         res.json(spatis);
       })
@@ -55,8 +56,10 @@ spatiRouter
       //      .populate("comments.author")
       .then((spati) => {
         res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.json(spati);
+        console.log(spati);
+        // res.setHeader("Content-Type", "application/json");
+        // res.json(spati);
+        res.render("spatiDetails.ejs", { spati });
       })
       .catch((err) => next(err));
   })
