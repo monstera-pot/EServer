@@ -93,7 +93,7 @@ spatiRouter
   .route("/:id/comments")
   .get((req, res, next) => {
     Spati.findById(req.params.id)
-      .populate("comments")
+      // .populate("comments")
       .then((spati) => {
         if (spati) {
           //check if it exists = non null
@@ -116,6 +116,7 @@ spatiRouter
           if (spati) {
             //req.body.author = req.user._id; //saves comment + getting user id to populate author's field
             spati.comments.push(req.body);
+            console.log(req.body);
             spati
               .save() //saving to db
               .then((spati) => {
@@ -161,6 +162,52 @@ spatiRouter
         }
       })
       .catch((err) => next(err));
+  });
+
+spatiRouter
+  .route("/:id/comments/:commentId")
+  .get((req, res, next) => {
+    //get spati id
+    const { id } = req.params;
+    Spati.findById(req.params.id)
+      //      .populate("comments.author")
+      //.populate("comments")
+      .then((spati) => {
+        res.statusCode = 200;
+        res.json(spati.comments.id(req.params.commentId));
+        // res.setHeader("Content-Type", "application/json");
+        // res.json(spati);
+        // res.render("spatiDetails.ejs", { spati });
+      })
+      .catch((err) => next(err));
+  })
+  .post((req, res) => {
+    res.statusCode = 403;
+    res.end(
+      `POST operation not supported on /spatis/${req.params.id}/comments/${req.params.commentId}`
+    );
+  })
+  .put(
+    //verify user matches author
+    (req, res) => {
+      res.statusCode = 403;
+      res.end(
+        `No PUT operations supported on /spatis/${req.params.id}/comments/${req.params.commentId}, baby`
+      );
+    }
+  )
+  .delete((req, res, next) => {
+    Spati.findById(req.params.id).then((spati) => {
+      spati.comments.id(req.params.commentId).remove();
+      spati
+        .save()
+        .then((spati) => {
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.json(spati);
+        })
+        .catch((err) => next(err));
+    });
   });
 
 module.exports = spatiRouter;
