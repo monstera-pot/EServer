@@ -15,33 +15,40 @@ userRouter.get("/", function (req, res, next) {
 });
 
 //New user registration
-userRouter.post("/signup", (req, res, next) => {
-  //New User
-  console.log(req.body);
-  //User.register(new User({ username: req.body.fisrtname }), (err, user) => {
-  const newUser = new User({ firstname: req.body.firstname });
+userRouter
+  .route("/signup")
+  // .get((req, res, next) => {
+  //   res.statusCode = 200;
+  //   //res.setHeader("Content-Type", "application/json");
+  //   res.render("auth.ejs");
+  // })
+  .post((req, res, next) => {
+    //New User
+    console.log(req.body);
+    //User.register(new User({ username: req.body.fisrtname }), (err, user) => {
+    const newUser = new User({ firstname: req.body.firstname });
 
-  if (err) {
-    res.statusCode = 500;
-    res.setHeader("Content-Type", "application/json");
-    res.json({ err: err });
-  } else {
-    if (req.body.firstname) {
-      user.firstname = req.body.firstname;
-    }
-    if (req.body.lastname) {
-      user.lastname = req.body.lastname;
-    }
-    user.save((err) => {
-      if (err) {
-        res.statusCode = 500;
-        res.setHeader("Content-Type", "application/json");
-        res.json({ err: err });
-        return;
+    if (err) {
+      res.statusCode = 500;
+      res.setHeader("Content-Type", "application/json");
+      res.json({ err: err });
+    } else {
+      if (req.body.firstname) {
+        user.firstname = req.body.firstname;
       }
-    });
-  }
-});
+      if (req.body.lastname) {
+        user.lastname = req.body.lastname;
+      }
+      user.save((err) => {
+        if (err) {
+          res.statusCode = 500;
+          res.setHeader("Content-Type", "application/json");
+          res.json({ err: err });
+          return;
+        }
+      });
+    }
+  });
 // User.find({ firstname: req.body.firstname }).then((user) => {
 //   if (user) {
 //     res.statusCode = 400;
@@ -62,10 +69,19 @@ userRouter.post("/signup", (req, res, next) => {
 //if user is successfully created we access user document
 // });
 
+userRouter.post("/login", (req, res) => {});
+
 userRouter.get("/logout", (req, res) => {
   //req.session.destroy
   //check if user is logged in
 });
+
+userRouter
+  .route("/:userId")
+  .get((req, res) => {
+    //get user details
+  })
+  .delete((req, res) => {});
 
 //Third party authentication?
 

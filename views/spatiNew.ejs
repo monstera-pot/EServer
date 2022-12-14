@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Spati</title>
+  </head>
+  <body>
+    <h1>Spati Details</h1>
+    <form action="/spatis" method="POST">
+      <ul>
+        <li>
+          <label for="title">Name :</label>
+          <input name="title" id="title" type="text" />
+        </li>
+        <li>
+          <label for="address">Address :</label>
+          <input name="address" id="address" type="text" />
+        </li>
+        <li>
+          <label for="PLZ">PLZ :</label>
+          <input name="PLZ" id="PLZ" type="number" />
+        </li>
+        <li>
+          <label for="viertel">Viertel: </label>
+          <select id="viertel" name="viertel">
+            <option name="viertel" value="Mitte">Mitte</option>
+            <option value="Friedrichshain-Kreuzberg">
+              Friedrichshain-Kreuzberg
+            </option>
+            <option name="viertel" value="Pankow">Pankow</option>
+            <option name="viertel" value="Charlottenburg-Wilmersdorf">
+              Charlottenburg-Wilmersdorf
+            </option>
+            <option name="viertel" value="Spandau">Spandau</option>
+            <option name="viertel" value="Steglitz-Zehlendorf">
+              Steglitz-Zehlendorf
+            </option>
+            <option name="viertel" value="Tempelhof-Schöneberg">
+              Tempelhof-Schöneberg
+            </option>
+            <option name="viertel" value="Neukölln">Neukölln</option>
+            <option name="viertel" value="Treptow-Köpenick">
+              Treptow-Köpenick
+            </option>
+            <option name="viertel" value="Marzahn-Hellersdorf">
+              Marzahn-Hellersdorf
+            </option>
+            <option name="viertel" value="Lichtenberg">Lichtenberg</option>
+            <option name="viertel" value="Reinickendorf">Reinickendorf</option>
+          </select>
+        </li>
+        <li>
+          <legend>Is it accessible?</legend>
+          <input
+            type="checkbox"
+            id="isAccessible"
+            name="isAccessible"
+            value="true"
+          />
+          <label for="isAccessible">Yes</label>
+        </li>
+      </ul>
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>

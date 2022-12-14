@@ -22,7 +22,8 @@ spatiRouter
     (req, res, next) => {
       Spati.create(req.body)
         .then((spati) => {
-          console.log("Spati added <3", spati);
+          console.log(spati);
+          console.log(req.body.spati);
           res.statusCode = 200;
           res.setHeader("Content-Type", "application/json");
           res.json(spati);
@@ -46,6 +47,10 @@ spatiRouter
         .catch((err) => next(err));
     }
   );
+
+spatiRouter.route("/new").get((req, res) => {
+  res.render("spatiNew.ejs");
+});
 
 spatiRouter
   .route("/:id")
