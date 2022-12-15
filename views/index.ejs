@@ -11,8 +11,10 @@
     <p>Go lorem this ipsum</p>
     <ul>
       <% for (let spati of spatis) { %>
-      <li><%=spati.title%></li>
+      <li><a href="/spatis/<%= spati._id  %>"><%=spati.title%></a></li>
       <% } %>
     </ul>
+
+    <a href="/spatis/new">Create new</a>
   </body>
 </html>

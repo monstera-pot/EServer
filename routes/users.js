@@ -76,12 +76,17 @@ userRouter.get("/logout", (req, res) => {
   //check if user is logged in
 });
 
-userRouter
-  .route("/:userId")
-  .get((req, res) => {
-    //get user details
-  })
-  .delete((req, res) => {});
+userRouter.route("/:userId").get(async (req, res) => {
+  const { id } = req.params;
+  //console.log(req.params.userId);
+  const foundUser = await User.findById(req.params._id);
+  //.then((user) => {
+  //  res.statusCode = 200;
+  console.log(foundUser);
+  res.send("FOUND");
+  //  res.render("user.ejs", { user });
+});
+//  .delete((req, res) => {});
 
 //Third party authentication?
 

@@ -10,7 +10,7 @@ spatiRouter
     Spati.find()
       .then((spatis) => {
         res.statusCode = 200;
-        //console.log(spatis);
+        console.log(spatis);
         res.setHeader("Content-Type", "application/json");
         res.json(spatis);
       })
@@ -26,7 +26,8 @@ spatiRouter
           console.log(req.body.spati);
           res.statusCode = 200;
           res.setHeader("Content-Type", "application/json");
-          res.json(spati);
+          //res.json(spati);
+          res.redirect(`/`);
         })
         .catch((err) => next(err));
     }
