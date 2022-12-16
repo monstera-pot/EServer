@@ -5,16 +5,26 @@ const spatiRouter = express.Router();
 spatiRouter
   .route("/")
   .options((req, res) => res.sendStatus(200))
+  //retrieve spätis
   .get((req, res, next) => {
-    //retrieve spätis
-    Spati.find()
-      .then((spatis) => {
+    //check if there's a query
+    const { viertel } = req.query;
+    if (viertel) {
+      Spati.find({ viertel }).then((spatis) => {
         res.statusCode = 200;
-        console.log(spatis);
-        res.setHeader("Content-Type", "application/json");
-        res.json(spatis);
-      })
-      .catch((err) => next(err));
+        res.render("index.ejs", { spatis, viertel });
+        console.log(viertel);
+      });
+    } else {
+      Spati.find()
+        .then((spatis) => {
+          res.statusCode = 200;
+          // res.setHeader("Content-Type", "application/json");
+          // res.json(spatis);
+          res.render("index.ejs", { spatis, viertel: "All" });
+        })
+        .catch((err) => next(err));
+    }
     //ordered by distance?
   })
   .post(
@@ -49,8 +59,24 @@ spatiRouter
     }
   );
 
+const viertels = [
+  "Mitte",
+  "Friedrichshain - Kreuzberg",
+  "Pankow",
+  "Charlottenburg - Wilmersdorf",
+  "Spandau",
+  "Steglitz - Zehlendorf",
+  "Tempelhof - Schöneberg",
+  "Neukölln",
+  "Treptow - Köpenick",
+  "Lichtenberg",
+  "Marzahn - Hellersdorf",
+  "Reinickendorf",
+];
+
 spatiRouter.route("/new").get((req, res) => {
-  res.render("spatiNew.ejs");
+  console.log(viertels);
+  res.render("spatiNew.ejs", { viertels });
 });
 
 spatiRouter
@@ -75,9 +101,15 @@ spatiRouter
   })
   .put(
     //verify user matches author
-    (req, res) => {
-      res.statusCode = 403;
-      res.end(`No PUT operations supported on /spatis/${req.params.id}, baby`);
+    (req, res, next) => {
+      const { id } = req.body;
+      Spati.findOneAndReplace(id, req.body, { runValidators: true }).then(
+        (spati) => {
+          res.statusCode = 200;
+          console.log(spati);
+          res.redirect(`/spatis/${spati._id}`);
+        }
+      );
     }
   )
   .delete(
@@ -86,12 +118,23 @@ spatiRouter
       Spati.findByIdAndDelete(req.params.id)
         .then((response) => {
           res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json(response);
+          // res.setHeader("Content-Type", "application/json");
+          // res.json(response);
+          res.redirect("/");
         })
         .catch((err) => next(err));
     }
   );
+
+spatiRouter.route("/:id/edit").get((req, res) => {
+  const { id } = req.params;
+  Spati.findById(id)
+    .then((spati) => {
+      console.log(spati);
+      res.render("spatiEdit.ejs", { spati, viertels });
+    })
+    .catch((err) => next(err));
+});
 
 //Endpoints for /:spatiId/comments
 

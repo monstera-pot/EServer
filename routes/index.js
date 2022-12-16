@@ -15,7 +15,7 @@ router.get("/", function (req, res, next) {
       console.log(spatis);
       //res.setHeader("Content-Type", "application/json");
       //res.json(spatis);
-      res.render("index.ejs", { spatis });
+      res.render("index.ejs", { spatis, viertel: "All" });
     })
     .catch((err) => next(err));
 });

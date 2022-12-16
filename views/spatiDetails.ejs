@@ -7,16 +7,27 @@
     <title>SPATI DETAILS</title>
   </head>
   <body>
-    <h1>SPATI <%= spati.title %> FOUND !</h1>
+    <h1>SPATI DETAILS</h1>
+    <p>Name: <%= spati.title %></p>
     <p>Adress: <%=spati.address%></p>
     <p>PLZ: <%=spati.PLZ%></p>
-    <p>Viertel: <%=spati.viertel%></p>
+    <!-- query for categories: /spatis?viertel=spati.viertel -->
+    <p>
+      Viertel:
+      <a href="/spatis?viertel=<%= spati.viertel %>"> <%=spati.viertel %> </a>
+    </p>
+    <% if (spati.isAccessible) { %>
+    <p>Is Accessible</p>
+    <% } %>
     <p>Comments:</p>
     <!--  ul>
        for (let comment of comments) { %>
       <li>%=comments.comment%></li>
-     
     </ul> -->
-    <a href="/">Go back</a>
+    <a href="/">Go back to home</a>
+    <a href="/spatis/<%=spati.id%>/edit">Edit</a>
+    <form action="/spatis/<%=spati.id%>?_method=DELETE" method="POST">
+      <button>Delete product</button>
+    </form>
   </body>
 </html>
