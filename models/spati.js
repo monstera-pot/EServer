@@ -25,11 +25,34 @@ const commentSchema = new Schema(
 
 const spatiSchema = new Schema(
   {
-    title: String,
-    address: String,
-    PLZ: Number,
-    viertel: String,
-    isAccessible: Boolean,
+    title: {
+      type: String,
+      default: "",
+      required: true,
+      unique: true,
+    },
+    address: {
+      type: String,
+      default: "",
+      required: true,
+      unique: true,
+    },
+    PLZ: {
+      type: Number,
+      default: "",
+      required: true,
+      unique: true,
+    },
+    viertel: {
+      type: String,
+      default: "",
+      required: true,
+      unique: true,
+    },
+    isAccessible: {
+      type: Boolean,
+      default: true,
+    },
     comments: [commentSchema], //array w/"sub" schema inside.
   },
   {

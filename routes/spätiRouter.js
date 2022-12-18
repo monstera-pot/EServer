@@ -30,16 +30,24 @@ spatiRouter
   .post(
     //verifyUser
     (req, res, next) => {
-      Spati.create(req.body)
-        .then((spati) => {
-          console.log(spati);
-          console.log(req.body.spati);
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          //res.json(spati);
-          res.redirect(`/`);
-        })
-        .catch((err) => next(err));
+      //const formValues = req.body;
+      if (Object.values(req.body).indexOf("") >= 0) {
+        Spati.create(req.body)
+          .then((spati) => {
+            //console.log(spati);
+            //console.log(req.body.spati);
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "application/json");
+            //res.json(spati);
+            res.redirect(`/`);
+          })
+          .catch((err) => next(err));
+      } else {
+        err = new Error("Missing fields in request");
+        err.status = 404;
+        console.log(err);
+        return next(err);
+      }
     }
   )
   .put((req, res) => {
@@ -75,7 +83,6 @@ const viertels = [
 ];
 
 spatiRouter.route("/new").get((req, res) => {
-  console.log(viertels);
   res.render("spatiNew.ejs", { viertels });
 });
 
