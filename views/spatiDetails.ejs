@@ -20,10 +20,43 @@
     <p>Is Accessible</p>
     <% } %>
     <p>Comments:</p>
-    <!--  ul>
-       for (let comment of comments) { %>
-      <li>%=comments.comment%></li>
-    </ul> -->
+    <% if (spati.comments !== 0) { %>
+    <div>
+      <% for (let i = 0; i < spati.comments.length; i++) { %>
+      <p><%=spati.comments[i].rating%> /5 stars</p>
+      <p>"<%=spati.comments[i].text%>" - <%=spati.comments[i].author%></p>
+      <a href="/spatis/<%= spati._id %>/comments/<%= spati.comments[i]._id%>">
+        Edit this comment
+      </a>
+    </div>
+    <% } %> <% } %>
+
+    <p>Leave a comment:</p>
+    <form action="/spatis/<%= spati._id %>/comments" method="POST">
+      <ul>
+        <li>
+          <label for="rating">Rating: </label>
+          <select name="rating" id="rating">
+            <option value="">--Please choose an option--</option>
+            <option name="rating" value="1">1</option>
+            <option name="rating" value="2">2</option>
+            <option name="rating" value="3">3</option>
+            <option name="rating" value="4">4</option>
+            <option name="rating" value="5">5</option>
+          </select>
+        </li>
+        <li>
+          <label for="text">Leave a comment: </label>
+          <input type="text" name="text" id="text" rows="5" />
+        </li>
+        <li>
+          <label for="author">Enter your name: </label>
+          <input type="text" name="author" id="author" />
+        </li>
+      </ul>
+      <button type="submit">Submit</button>
+    </form>
+
     <a href="/">Go back to home</a>
     <a href="/spatis/<%=spati.id%>/edit">Edit</a>
     <form action="/spatis/<%=spati.id%>?_method=DELETE" method="POST">

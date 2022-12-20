@@ -13,10 +13,12 @@ const commentSchema = new Schema(
       type: String,
       required: true,
     },
-    // author: {
-    //   type: mongoose.Schema.Types.ObjectId, //instead of String w/author, we store a reference to user documents obj id.
-    //   ref: "User", //this is the model we use
-    // },
+    author: {
+      type: String,
+      required: true,
+      //   type: mongoose.Schema.Types.ObjectId, //instead of String w/author, we store a reference to user documents obj id.
+      //   ref: "User", //this is the model we use
+    },
   },
   {
     timestamps: true,
