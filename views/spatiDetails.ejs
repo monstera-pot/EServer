@@ -25,9 +25,23 @@
       <% for (let i = 0; i < spati.comments.length; i++) { %>
       <p><%=spati.comments[i].rating%> /5 stars</p>
       <p>"<%=spati.comments[i].text%>" - <%=spati.comments[i].author%></p>
-      <a href="/spatis/<%= spati._id %>/comments/<%= spati.comments[i]._id%>">
-        Edit this comment
-      </a>
+      <form
+        action="/spatis/<%= spati._id %>/comments/<%=spati.comments[i].id%>?_method=DELETE"
+        method="POST"
+      >
+        <button>Delete Comment</button>
+      </form>
+      <!-- <a href="/spatis/%=spati._id%>/comments/%=spati.comments[i]._id%>">
+        Delete this comment
+      </a> -->
+      <!-- <form
+        action="/spatis/<=spati.id%>/comments/<=commentId%>?_method=DELETE"
+        method="POST"
+      >-->
+      <!-- <p>spati: id<%= spati.id %> </p> -->
+      <!-- <p>comment id: <= commentId %> </p> -->
+      <!-- <button>Delete comment</button>
+      </form>  -->
     </div>
     <% } %> <% } %>
 

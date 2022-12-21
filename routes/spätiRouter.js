@@ -31,23 +31,23 @@ spatiRouter
     //verifyUser
     (req, res, next) => {
       //const formValues = req.body;
-      if (Object.values(req.body).indexOf("") >= 0) {
-        Spati.create(req.body)
-          .then((spati) => {
-            //console.log(spati);
-            //console.log(req.body.spati);
-            res.statusCode = 200;
-            res.setHeader("Content-Type", "application/json");
-            //res.json(spati);
-            res.redirect(`/`);
-          })
-          .catch((err) => next(err));
-      } else {
-        err = new Error("Missing fields in request");
-        err.status = 404;
-        console.log(err);
-        return next(err);
-      }
+      //if (Object.values(req.body).indexOf("") >= 0) {
+      Spati.create(req.body)
+        .then((spati) => {
+          //console.log(spati);
+          //console.log(req.body.spati);
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          //res.json(spati);
+          res.redirect(`/`);
+        })
+        .catch((err) => next(err));
+      //} else {
+      //   err = new Error("Missing fields in request");
+      //   err.status = 404;
+      //   console.log(err);
+      //   return next(err);
+      // }
     }
   )
   .put((req, res) => {
@@ -92,14 +92,18 @@ spatiRouter
     //get spati + indications + tags
     const { id } = req.params;
     Spati.findById(id)
-      //      .populate("comments.author")
+      .populate("comments")
       .then((spati) => {
         res.statusCode = 200;
         console.log(spati);
+        // if (spati.comments.length === 0) {
         // res.setHeader("Content-Type", "application/json");
         // res.json(spati);
         res.render("spatiDetails.ejs", { spati });
-        console.log(spati.comments);
+        // }
+        // const commentId = spati.comments.id(req.params.commentId);
+        // res.render("spatiDetails.ejs", { spati, commentId: commentId._id });
+        // console.log(spati.comments);
       })
       .catch((err) => next(err));
   })
@@ -139,7 +143,8 @@ spatiRouter.route("/:id/edit").get((req, res) => {
   Spati.findById(id)
     .then((spati) => {
       console.log(spati);
-      res.render("spatiEdit.ejs", { spati, viertels });
+      //res.render("spatiEdit.ejs", { spati, viertels });
+      res.send("EDITED");
     })
     .catch((err) => next(err));
 });
@@ -236,12 +241,13 @@ spatiRouter
       .then((spati) => {
         res.statusCode = 200;
         //res.json(spati.comments.id(req.params.commentId));
+        const commentId = spati.comments.id(req.params.commentId);
         //res.setHeader("Content-Type", "application/json");
-        console.log(spati);
-        //res.json(spati);
+        console.log("commentId is " + commentId._id);
+        // res.json(spati);
         res.render("commentDetail.ejs", {
           spati,
-          spatiId: req.params.commentId,
+          commentId: commentId._id,
         });
       })
       .catch((err) => next(err));
@@ -262,14 +268,19 @@ spatiRouter
     }
   )
   .delete((req, res, next) => {
+    const { id } = req.params;
     Spati.findById(req.params.id).then((spati) => {
       spati.comments.id(req.params.commentId).remove();
       spati
         .save()
         .then((spati) => {
+          const commentId = spati.comments.id(req.params.commentId);
           res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json(spati);
+          console.log(spati);
+
+          res.redirect(`/spatis/${id}`);
+          // res.setHeader("Content-Type", "application/json");
+          // res.json(spati);
         })
         .catch((err) => next(err));
     });
