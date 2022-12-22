@@ -12,7 +12,11 @@ spatiRouter
     if (viertel) {
       Spati.find({ viertel }).then((spatis) => {
         res.statusCode = 200;
-        res.render("index.ejs", { spatis, viertel });
+        res.render("index.ejs", {
+          spatis,
+          viertel,
+          messages: req.flash("info"),
+        });
         console.log(viertel);
       });
     } else {
@@ -39,6 +43,7 @@ spatiRouter
           res.statusCode = 200;
           res.setHeader("Content-Type", "application/json");
           //res.json(spati);
+          req.flash("info", "Successfully added Spati");
           res.redirect(`/`);
         })
         .catch((err) => next(err));
@@ -99,7 +104,8 @@ spatiRouter
         // if (spati.comments.length === 0) {
         // res.setHeader("Content-Type", "application/json");
         // res.json(spati);
-        res.render("spatiDetails.ejs", { spati });
+        res.render("spatiDetails.ejs", { spati, messages: req.flash("info") });
+        console.log(messages);
         // }
         // const commentId = spati.comments.id(req.params.commentId);
         // res.render("spatiDetails.ejs", { spati, commentId: commentId._id });
@@ -119,6 +125,7 @@ spatiRouter
         (spati) => {
           res.statusCode = 200;
           console.log(spati);
+          req.flash("info", "Successfully updated Spati");
           res.redirect(`/spatis/${spati._id}`);
         }
       );
@@ -132,6 +139,8 @@ spatiRouter
           res.statusCode = 200;
           // res.setHeader("Content-Type", "application/json");
           // res.json(response);
+          req.flash("info", "Successfully deleted Späti");
+
           res.redirect("/");
         })
         .catch((err) => next(err));
@@ -184,6 +193,7 @@ spatiRouter
               .save() //saving to db
               .then((spati) => {
                 res.statusCode = 200;
+                req.flash("info", "Successfully added comment");
                 res.redirect(`/spatis/${id}`);
                 console.log(spati.comments);
                 // res.setHeader("Content-Type", "application/json");
@@ -277,7 +287,7 @@ spatiRouter
           const commentId = spati.comments.id(req.params.commentId);
           res.statusCode = 200;
           console.log(spati);
-
+          req.flash("info", "Successfully deleted comment");
           res.redirect(`/spatis/${id}`);
           // res.setHeader("Content-Type", "application/json");
           // res.json(spati);
