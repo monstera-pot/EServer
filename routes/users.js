@@ -5,6 +5,7 @@ const User = require("../models/user");
 /* GET users listing. */
 userRouter.get("/", function (req, res, next) {
   //show all users
+  //I should check if Admin
   User.find().then((users) => {
     res.statusCode = 200;
     //res.setHeader("Content-Type", "application/json");
@@ -17,16 +18,17 @@ userRouter.get("/", function (req, res, next) {
 //New user registration
 userRouter
   .route("/signup")
-  // .get((req, res, next) => {
-  //   res.statusCode = 200;
-  //   //res.setHeader("Content-Type", "application/json");
-  //   res.render("auth.ejs");
-  // })
+  .get((req, res, next) => {
+    res.statusCode = 200;
+    //res.setHeader("Content-Type", "application/json");
+    res.render("signupForm.ejs");
+  })
   .post((req, res, next) => {
     //New User
     console.log(req.body);
     //User.register(new User({ username: req.body.fisrtname }), (err, user) => {
-    const newUser = new User({ firstname: req.body.firstname });
+    const newUser = new User({ username: req.body.username });
+    res.send(req.body);
 
     if (err) {
       res.statusCode = 500;

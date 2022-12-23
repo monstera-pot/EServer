@@ -1,21 +1,14 @@
 const mongoose = require("mongoose");
 //const { authenticate } = require("passport");
-//const passportLocalMongoose = require("passport-local-mongoose");
-const router = require("../routes/users");
+const passportLocalMongoose = require("passport-local-mongoose");
+//const router = require("../routes/users");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-  firstname: {
+  email: {
     type: String,
-    default: "",
-    required: true,
     unique: true,
-  },
-  lastname: {
-    type: String,
-    default: "",
     required: true,
-    unique: true,
   },
   admin: {
     type: Boolean,
@@ -23,9 +16,7 @@ const userSchema = new Schema({
   },
 });
 
-//plugin takes care of username + pw; + additional authenticating methods
-//like . authenticate
+//username and pw provided by Passport:
+userSchema.plugin(passportLocalMongoose);
 
-//userSchema.plugin(passportLocalMongoose);
-
-module.exports = mongoose.model("User", userSchema); //collection named "users",
+module.exports = mongoose.model("User", userSchema);

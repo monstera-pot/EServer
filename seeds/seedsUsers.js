@@ -1,15 +1,15 @@
 const userSeeds = [
   {
-    firstname: "John",
-    lastname: "Doe",
+    username: "John",
+    password: "Doe",
   },
   {
-    firstname: "Derp",
-    lastname: "McDerpson",
+    username: "Derp",
+    password: "McDerpson",
   },
   {
-    firstname: "Roxanne",
-    lastname: "Roxana Dana",
+    username: "Roxanne",
+    password: "Roxana Dana",
   },
 ];
 

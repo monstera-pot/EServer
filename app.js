@@ -3,6 +3,11 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+//const bodyParser = require("body-parser");
+
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const User = require("./models/user");
 
 const session = require("express-session");
 const flash = require("connect-flash");
@@ -36,9 +41,12 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 app.use(logger("dev"));
+//app.use(express.bodyParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+//app.use(passport.session());
+//app.use(passport.initialize());
 app.use(methodOverride("_method"));
 
 const optionsSession = {
@@ -49,6 +57,13 @@ const optionsSession = {
 };
 app.use(session(optionsSession));
 app.use(flash());
+// passport config
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 //auth should come here
 app.use(express.static(path.join(__dirname, "views")));
