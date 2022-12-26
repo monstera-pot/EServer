@@ -8,20 +8,20 @@
   </head>
   <body>
     <h1>SIGN UP</h1>
-    <form action="/users" name="" method="POST">
+    <form action="/users/signup" method="POST">
       <div>
         <label for="username">Username:</label>
-        <input id="username" type="text" />
+        <input name="username" id="username" type="text" />
       </div>
       <div>
         <label for="password">Password:</label>
-        <input id="password" type="password" />
+        <input name="password" id="password" type="password" />
       </div>
       <div>
         <label for="email">Email:</label>
-        <input id="email" type="email" />
+        <input name="email" id="email" type="email" />
       </div>
+      <button type="submit">Submit</button>
     </form>
-    <button type="submit">Submit</button>
   </body>
 </html>

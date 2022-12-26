@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-//const { authenticate } = require("passport");
+const { authenticate } = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 //const router = require("../routes/users");
 const Schema = mongoose.Schema;

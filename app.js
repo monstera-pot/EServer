@@ -27,7 +27,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log("Connection OPEN");
+    console.log("Connection to mongo OPEN");
   })
   .catch((err) => {
     console.log("ERROR NOOO");

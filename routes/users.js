@@ -1,6 +1,7 @@
 const express = require("express");
 const userRouter = express.Router();
 const User = require("../models/user");
+const passport = require("passport");
 
 /* GET users listing. */
 userRouter.get("/", function (req, res, next) {
@@ -25,31 +26,29 @@ userRouter
   })
   .post((req, res, next) => {
     //New User
+    const { username, password, email } = req.body;
     console.log(req.body);
-    //User.register(new User({ username: req.body.fisrtname }), (err, user) => {
-    const newUser = new User({ username: req.body.username });
-    res.send(req.body);
-
-    if (err) {
-      res.statusCode = 500;
-      res.setHeader("Content-Type", "application/json");
-      res.json({ err: err });
-    } else {
-      if (req.body.firstname) {
-        user.firstname = req.body.firstname;
+    User.register(new User({ username, email }), password, (err, user) => {
+      //const newUser = new User({ username: req.body.username });
+      if (err) {
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.json({ err: err });
       }
-      if (req.body.lastname) {
-        user.lastname = req.body.lastname;
-      }
-      user.save((err) => {
-        if (err) {
-          res.statusCode = 500;
-          res.setHeader("Content-Type", "application/json");
-          res.json({ err: err });
-          return;
-        }
+      // user.save((err) => {
+      //   if (err) {
+      //     res.statusCode = 500;
+      //     res.setHeader("Content-Type", "application/json");
+      //     res.json({ err: err });
+      //     return;
+      //   }
+      passport.authenticate("local")(req, res, () => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json({ success: true, status: "Registration Successful!" });
+        //also sends response so we end here.
       });
-    }
+    });
   });
 // User.find({ firstname: req.body.firstname }).then((user) => {
 //   if (user) {
@@ -71,7 +70,17 @@ userRouter
 //if user is successfully created we access user document
 // });
 
-userRouter.post("/login", (req, res) => {});
+userRouter
+  .route("/login")
+  .get((req, res, next) => {
+    res.render("loginForm.ejs");
+  })
+  .post(
+    passport.authenticate("local", { failureRedirect: "/login" }),
+    (req, res, next) => {
+      res.redirect("/");
+    }
+  );
 
 userRouter.get("/logout", (req, res) => {
   //req.session.destroy
