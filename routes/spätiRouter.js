@@ -15,7 +15,7 @@ spatiRouter
         res.render("index.ejs", {
           spatis,
           viertel,
-          messages: req.flash("info"),
+          //messages: req.flash("info"),
         });
         console.log(viertel);
       });
@@ -38,12 +38,10 @@ spatiRouter
       //if (Object.values(req.body).indexOf("") >= 0) {
       Spati.create(req.body)
         .then((spati) => {
-          //console.log(spati);
-          //console.log(req.body.spati);
+          req.flash("success", "Successfully added Spati");
           res.statusCode = 200;
           res.setHeader("Content-Type", "application/json");
           //res.json(spati);
-          req.flash("info", "Successfully added Spati");
           res.redirect(`/`);
         })
         .catch((err) => next(err));

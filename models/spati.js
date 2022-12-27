@@ -43,6 +43,7 @@ const spatiSchema = new Schema(
       type: Number,
       default: "",
       required: true,
+      unique: false,
     },
     viertel: {
       type: String,
