@@ -1,0 +1,8 @@
+<div>
+  <% if (!req.user) { %>
+  <a href="/users/login">Log in</a>
+  <a href="/users/signup">Sign up</a>
+  <% } else { %>
+  <a href="/users/logout">Log out</a>
+  <% } %>
+</div>

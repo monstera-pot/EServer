@@ -1,6 +1,7 @@
 const express = require("express");
 const Spati = require("../models/spati");
 const spatiRouter = express.Router();
+const { isLoggedIn } = require("../MiddlewareIsLoggedIn");
 
 spatiRouter
   .route("/")
@@ -31,28 +32,25 @@ spatiRouter
     }
     //ordered by distance?
   })
-  .post(
-    //verifyUser
-    (req, res, next) => {
-      //const formValues = req.body;
-      //if (Object.values(req.body).indexOf("") >= 0) {
-      Spati.create(req.body)
-        .then((spati) => {
-          req.flash("success", "Successfully added Spati");
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          //res.json(spati);
-          res.redirect(`/`);
-        })
-        .catch((err) => next(err));
-      //} else {
-      //   err = new Error("Missing fields in request");
-      //   err.status = 404;
-      //   console.log(err);
-      //   return next(err);
-      // }
-    }
-  )
+  .post(isLoggedIn, (req, res, next) => {
+    //const formValues = req.body;
+    //if (Object.values(req.body).indexOf("") >= 0) {
+    Spati.create(req.body)
+      .then((spati) => {
+        req.flash("success", "Successfully added Spati");
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        //res.json(spati);
+        res.redirect(`/`);
+      })
+      .catch((err) => next(err));
+    //} else {
+    //   err = new Error("Missing fields in request");
+    //   err.status = 404;
+    //   console.log(err);
+    //   return next(err);
+    // }
+  })
   .put((req, res) => {
     res.statusCode = 403;
     res.end("No PUT operations supported on /spatis, baby");
@@ -85,7 +83,7 @@ const viertels = [
   "Reinickendorf",
 ];
 
-spatiRouter.route("/new").get((req, res) => {
+spatiRouter.route("/new").get(isLoggedIn, (req, res) => {
   res.render("spatiNew.ejs", { viertels });
 });
 
@@ -98,12 +96,10 @@ spatiRouter
       .populate("comments")
       .then((spati) => {
         res.statusCode = 200;
-        console.log(spati);
         // if (spati.comments.length === 0) {
-        // res.setHeader("Content-Type", "application/json");
+        res.setHeader("Content-Type", "application/json");
         // res.json(spati);
         res.render("spatiDetails.ejs", { spati, messages: req.flash("info") });
-        console.log(messages);
         // }
         // const commentId = spati.comments.id(req.params.commentId);
         // res.render("spatiDetails.ejs", { spati, commentId: commentId._id });
@@ -123,7 +119,7 @@ spatiRouter
         (spati) => {
           res.statusCode = 200;
           console.log(spati);
-          req.flash("info", "Successfully updated Spati");
+          req.flash("success", "Successfully updated Spati");
           res.redirect(`/spatis/${spati._id}`);
         }
       );
@@ -138,20 +134,18 @@ spatiRouter
           // res.setHeader("Content-Type", "application/json");
           // res.json(response);
           req.flash("info", "Successfully deleted Späti");
-
           res.redirect("/");
         })
         .catch((err) => next(err));
     }
   );
 
-spatiRouter.route("/:id/edit").get((req, res) => {
+spatiRouter.route("/:id/edit").get(isLoggedIn, (req, res) => {
   const { id } = req.params;
   Spati.findById(id)
     .then((spati) => {
       console.log(spati);
-      //res.render("spatiEdit.ejs", { spati, viertels });
-      res.send("EDITED");
+      res.render("spatiEdit.ejs", { spati, viertels });
     })
     .catch((err) => next(err));
 });
@@ -191,7 +185,7 @@ spatiRouter
               .save() //saving to db
               .then((spati) => {
                 res.statusCode = 200;
-                req.flash("info", "Successfully added comment");
+                req.flash("success", "Successfully added comment");
                 res.redirect(`/spatis/${id}`);
                 console.log(spati.comments);
                 // res.setHeader("Content-Type", "application/json");
@@ -285,7 +279,7 @@ spatiRouter
           const commentId = spati.comments.id(req.params.commentId);
           res.statusCode = 200;
           console.log(spati);
-          req.flash("info", "Successfully deleted comment");
+          req.flash("success", "Successfully deleted comment");
           res.redirect(`/spatis/${id}`);
           // res.setHeader("Content-Type", "application/json");
           // res.json(spati);

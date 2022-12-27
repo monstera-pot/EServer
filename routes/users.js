@@ -2,6 +2,7 @@ const express = require("express");
 const userRouter = express.Router();
 const User = require("../models/user");
 const passport = require("passport");
+const { isLoggedIn } = require("../MiddlewareIsLoggedIn");
 
 /* GET users listing. */
 userRouter.get("/", function (req, res, next) {
@@ -43,9 +44,11 @@ userRouter
       //     return;
       //   }
       passport.authenticate("local")(req, res, () => {
+        req.flash("success", "Successfully logged in");
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
-        res.json({ success: true, status: "Registration Successful!" });
+        res.redirect(`/`);
+        //res.json({ success: true, status: "Registration Successful!" });
         //also sends response so we end here.
       });
     });
@@ -82,13 +85,19 @@ userRouter
     }
   );
 
-userRouter.get("/logout", (req, res) => {
+userRouter.route("/logout").get(isLoggedIn, (req, res) => {
   //req.session.destroy
-  //check if user is logged in
+  req.logout((err) => {
+    if (err) {
+      req.flash("success", "You need to be logged in");
+      return next(err);
+    }
+    req.flash("success", "Successfully logged out");
+  });
 });
 
 userRouter
-  .route("/:userId")
+  .route("/:id")
   .get(async (req, res) => {
     const { id } = req.params; //we capture id from the req.params
     //console.log(req.params.userId);

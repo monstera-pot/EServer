@@ -21,6 +21,7 @@ const favoriteRouter = require("./routes/favoriteRouter");
 const methodOverride = require("method-override");
 
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 mongoose
   .connect("mongodb://localhost:27017/spatiBase", {
     useNewUrlParser: true,
@@ -41,7 +42,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 app.use(logger("dev"));
-//app.use(express.bodyParser());
+// app.use(express.bodyParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -74,6 +75,8 @@ passport.deserializeUser(User.deserializeUser());
 app.use(express.static(path.join(__dirname, "views")));
 
 app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  res.locals.error = req.flash("error");
   res.locals.success = req.flash("success");
   next();
 });
