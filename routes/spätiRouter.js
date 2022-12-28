@@ -2,6 +2,7 @@ const express = require("express");
 const Spati = require("../models/spati");
 const spatiRouter = express.Router();
 const { isLoggedIn } = require("../MiddlewareIsLoggedIn");
+const authenticate = require("../authenticate");
 
 spatiRouter
   .route("/")
@@ -32,7 +33,7 @@ spatiRouter
     }
     //ordered by distance?
   })
-  .post(isLoggedIn, (req, res, next) => {
+  .post(authenticate.verifyUser, (req, res, next) => {
     //const formValues = req.body;
     //if (Object.values(req.body).indexOf("") >= 0) {
     Spati.create(req.body)

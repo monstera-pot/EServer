@@ -3,6 +3,10 @@ const userRouter = express.Router();
 const User = require("../models/user");
 const passport = require("passport");
 const { isLoggedIn } = require("../MiddlewareIsLoggedIn");
+const jwt = require("jsonwebtoken");
+const authenticate = require("../authenticate");
+
+// ...
 
 /* GET users listing. */
 userRouter.get("/", function (req, res, next) {
@@ -12,7 +16,6 @@ userRouter.get("/", function (req, res, next) {
     res.statusCode = 200;
     //res.setHeader("Content-Type", "application/json");
     //res.json(users);
-    console.log(users);
     res.render("users.ejs", { users });
   });
 });
@@ -79,21 +82,39 @@ userRouter
     res.render("loginForm.ejs");
   })
   .post(
-    passport.authenticate("local", { failureRedirect: "/login" }),
-    (req, res, next) => {
-      res.redirect("/");
+    passport.authenticate("local"),
+    //{ failureRedirect: "/login" },
+    (req, res) => {
+      const token = authenticate.getToken({ _id: req.user._id });
+      console.log("token", token);
+      console.log("req.user:", req.user);
+      res.statusCode = 200;
+      res.setHeader("ContentType", "application/json");
+      res.json({
+        success: true,
+        token: token, //we add token to response obj
+        status: "You are successfully logged in!",
+      });
+      //res.send("LOGGED IN ");
+      // req.flash("success", "Successfully logged in");
+      // res.redirect("/users");
+      // req.login(user);
+      // res.redirect("/");
     }
   );
 
-userRouter.route("/logout").get(isLoggedIn, (req, res) => {
+userRouter.route("/logout").get((req, res) => {
   //req.session.destroy
-  req.logout((err) => {
-    if (err) {
-      req.flash("success", "You need to be logged in");
-      return next(err);
-    }
+  if (req.session) {
     req.flash("success", "Successfully logged out");
-  });
+    req.session.destroy();
+    res.clearCookie("session-id");
+    res.redirect("/");
+  } else {
+    const err = new Error("You are not logged in!");
+    err.status = 401;
+    return next(err);
+  }
 });
 
 userRouter

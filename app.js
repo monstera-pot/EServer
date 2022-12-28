@@ -1,13 +1,14 @@
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
-var cookieParser = require("cookie-parser");
+//var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 //const bodyParser = require("body-parser");
 
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const User = require("./models/user");
+const config = require("./config");
 
 const session = require("express-session");
 const flash = require("connect-flash");
@@ -22,8 +23,9 @@ const methodOverride = require("method-override");
 
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const url = config.mongoUrl;
 mongoose
-  .connect("mongodb://localhost:27017/spatiBase", {
+  .connect(url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -45,7 +47,7 @@ app.use(logger("dev"));
 // app.use(express.bodyParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+//app.use(cookieParser());
 //app.use(passport.session());
 //app.use(passport.initialize());
 app.use(methodOverride("_method"));
@@ -76,8 +78,8 @@ app.use(express.static(path.join(__dirname, "views")));
 
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
-  res.locals.error = req.flash("error");
   res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
   next();
 });
 
