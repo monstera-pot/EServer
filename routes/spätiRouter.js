@@ -33,9 +33,7 @@ spatiRouter
     }
     //ordered by distance?
   })
-  .post(authenticate.verifyUser, (req, res, next) => {
-    //const formValues = req.body;
-    //if (Object.values(req.body).indexOf("") >= 0) {
+  .post((req, res, next) => {
     Spati.create(req.body)
       .then((spati) => {
         req.flash("success", "Successfully added Spati");
@@ -98,9 +96,11 @@ spatiRouter
       .then((spati) => {
         res.statusCode = 200;
         // if (spati.comments.length === 0) {
-        res.setHeader("Content-Type", "application/json");
+        //res.setHeader("Content-Type", "application/json");
         // res.json(spati);
-        res.render("spatiDetails.ejs", { spati, messages: req.flash("info") });
+        res.render("spatiDetails.ejs", {
+          spati /*, messages: req.flash("info")*/,
+        });
         // }
         // const commentId = spati.comments.id(req.params.commentId);
         // res.render("spatiDetails.ejs", { spati, commentId: commentId._id });

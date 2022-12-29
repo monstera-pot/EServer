@@ -86,36 +86,64 @@ userRouter
     //{ failureRedirect: "/login" },
     (req, res) => {
       const token = authenticate.getToken({ _id: req.user._id });
-      console.log("token", token);
-      console.log("req.user:", req.user);
+      console.log(res);
+      res.token = token;
       res.statusCode = 200;
       res.setHeader("ContentType", "application/json");
-      res.json({
-        success: true,
-        token: token, //we add token to response obj
-        status: "You are successfully logged in!",
-      });
-      //res.send("LOGGED IN ");
-      // req.flash("success", "Successfully logged in");
-      // res.redirect("/users");
-      // req.login(user);
-      // res.redirect("/");
+      // res.json({
+      //   success: true,
+      //   token: token, //we add token to response obj
+      //   status: "You are successfully logged in!",
+      // });
+      req.flash("success", "Successfully logged in !");
+      res.redirect("/");
     }
   );
 
 userRouter.route("/logout").get((req, res) => {
-  //req.session.destroy
   if (req.session) {
     req.flash("success", "Successfully logged out");
-    req.session.destroy();
-    res.clearCookie("session-id");
-    res.redirect("/");
+    req.session.destroy((err) => {
+      if (err) {
+        res.status(400).send("Unable to log out");
+      } else {
+        //res.send("Logout successful");
+        res.redirect("/");
+      }
+    });
   } else {
-    const err = new Error("You are not logged in!");
-    err.status = 401;
-    return next(err);
+    res.redirect("/");
   }
+
+  //req.session.destroy
+  // console.log("/logout session is ", req.session);
+  // if (req.session === undefined) {
+  //   //res.send("not logged in");
+  //   console.log("req.session is undefined");
+  // } else {
+  //   req.flash("success", "Successfully logged out");
+  //   req.logout(function (err) {
+  //     if (err) {
+  //       return next(err);
+  //     }
+  //     res.redirect("/");
+  //   });
+  // }
 });
+// console.log("req.session is:", req.session);
+// req.session.destroy();
+// console.log("destroyed:", req.session);
+// console.log("session-id is: ", req.session.cookie);
+//res.clearCookie("session-id");
+//console.log("destroyed session: ", req.sessionID);
+//res.redirect("/");
+//res.send("LOGGED OUT");
+
+// const err = new Error("You are not logged in!");
+// err.status = 401;
+// return next(err);
+
+// });
 
 userRouter
   .route("/:id")

@@ -9,7 +9,7 @@ const Spati = require("../models/spati");
 router.get("/", function (req, res, next) {
   //create a variable to contain elements of the spati collection
   //add this variable as second argument of render
-  console.log("Route / 's req.user is:", req.user);
+  console.log("Route /'s req.user is:", req.user);
 
   Spati.find({})
     .then((spatis) => {

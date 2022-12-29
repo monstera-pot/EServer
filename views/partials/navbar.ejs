@@ -1,8 +1,8 @@
 <div>
-  <!-- % if (!req.user) { %> -->
+  <% if (!currentUser) { %>
   <a href="/users/login">Log in</a>
   <a href="/users/signup">Sign up</a>
-  <!-- % } else { %> -->
+  <% } else { %>
   <a href="/users/logout">Log out</a>
-  <!-- % } %> -->
+  <% } %>
 </div>
