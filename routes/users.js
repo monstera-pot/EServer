@@ -6,8 +6,6 @@ const { isLoggedIn } = require("../MiddlewareIsLoggedIn");
 const jwt = require("jsonwebtoken");
 const authenticate = require("../authenticate");
 
-// ...
-
 /* GET users listing. */
 userRouter.get("/", function (req, res, next) {
   //show all users
@@ -39,42 +37,15 @@ userRouter
         res.setHeader("Content-Type", "application/json");
         res.json({ err: err });
       }
-      // user.save((err) => {
-      //   if (err) {
-      //     res.statusCode = 500;
-      //     res.setHeader("Content-Type", "application/json");
-      //     res.json({ err: err });
-      //     return;
-      //   }
       passport.authenticate("local")(req, res, () => {
         req.flash("success", "Successfully logged in");
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
-        res.redirect(`/`);
-        //res.json({ success: true, status: "Registration Successful!" });
+        res.redirect("/");
         //also sends response so we end here.
       });
     });
   });
-// User.find({ firstname: req.body.firstname }).then((user) => {
-//   if (user) {
-//     res.statusCode = 400;
-//     res.send("user already exists ;)");
-//   } else {
-//     const newUser = new User({
-//       username: req.body.username,
-//       lastname: req.body.lastname,
-//     });
-//     newUser.save();
-//     res.statusCode = 200;
-//     res.json(newUser);
-//   }
-// });
-//Check if user exists already
-
-//User.findOne({ "username": })
-//if user is successfully created we access user document
-// });
 
 userRouter
   .route("/login")
@@ -82,21 +53,21 @@ userRouter
     res.render("loginForm.ejs");
   })
   .post(
-    passport.authenticate("local"),
-    //{ failureRedirect: "/login" },
+    passport.authenticate("local", {
+      failureFlash: true,
+      failureRedirect: "/users/login",
+      keepSessionInfo: true, //to redirect to intended url
+    }),
     (req, res) => {
       const token = authenticate.getToken({ _id: req.user._id });
-      console.log(res);
       res.token = token;
       res.statusCode = 200;
       res.setHeader("ContentType", "application/json");
-      // res.json({
-      //   success: true,
-      //   token: token, //we add token to response obj
-      //   status: "You are successfully logged in!",
-      // });
       req.flash("success", "Successfully logged in !");
-      res.redirect("/");
+      console.log("req.session: ", req.session);
+      const redirectUrl = req.session.returnTo || "/";
+      console.log("redirectUrl: ", redirectUrl);
+      res.redirect(redirectUrl);
     }
   );
 
@@ -107,49 +78,18 @@ userRouter.route("/logout").get((req, res) => {
       if (err) {
         res.status(400).send("Unable to log out");
       } else {
-        //res.send("Logout successful");
         res.redirect("/");
       }
     });
   } else {
     res.redirect("/");
   }
-
-  //req.session.destroy
-  // console.log("/logout session is ", req.session);
-  // if (req.session === undefined) {
-  //   //res.send("not logged in");
-  //   console.log("req.session is undefined");
-  // } else {
-  //   req.flash("success", "Successfully logged out");
-  //   req.logout(function (err) {
-  //     if (err) {
-  //       return next(err);
-  //     }
-  //     res.redirect("/");
-  //   });
-  // }
 });
-// console.log("req.session is:", req.session);
-// req.session.destroy();
-// console.log("destroyed:", req.session);
-// console.log("session-id is: ", req.session.cookie);
-//res.clearCookie("session-id");
-//console.log("destroyed session: ", req.sessionID);
-//res.redirect("/");
-//res.send("LOGGED OUT");
-
-// const err = new Error("You are not logged in!");
-// err.status = 401;
-// return next(err);
-
-// });
 
 userRouter
   .route("/:id")
   .get(async (req, res) => {
     const { id } = req.params; //we capture id from the req.params
-    //console.log(req.params.userId);
     User.findById(req.params.id).then((user) => {
       res.statusCode = 200;
       console.log(user);
@@ -157,7 +97,5 @@ userRouter
     });
   })
   .delete((req, res) => {});
-
-//Third party authentication?
 
 module.exports = userRouter;

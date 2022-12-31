@@ -11,8 +11,8 @@
 
     <p>Name: <%= user.username %></p>
     <p>Email: <%= user.email%></p>
-    <form>
-      <button>Log Out</button>
+    <form action="/users/logout" method="GET">
+      <button type="submit">Log Out</button>
     </form>
     <a href="/">All spatis</a>
   </body>

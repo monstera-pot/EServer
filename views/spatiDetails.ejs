@@ -31,17 +31,6 @@
       >
         <button>Delete Comment</button>
       </form>
-      <!-- <a href="/spatis/%=spati._id%>/comments/%=spati.comments[i]._id%>">
-        Delete this comment
-      </a> -->
-      <!-- <form
-        action="/spatis/<=spati.id%>/comments/<=commentId%>?_method=DELETE"
-        method="POST"
-      >-->
-      <!-- <p>spati: id<%= spati.id %> </p> -->
-      <!-- <p>comment id: <= commentId %> </p> -->
-      <!-- <button>Delete comment</button>
-      </form>  -->
     </div>
     <% } %> <% } %>
 
@@ -70,11 +59,16 @@
       </ul>
       <button type="submit">Submit</button>
     </form>
-
-    <a href="/">Go back to home</a>
-    <a href="/spatis/<%=spati.id%>/edit">Edit</a>
-    <form action="/spatis/<%=spati.id%>?_method=DELETE" method="POST">
-      <button>Delete product</button>
-    </form>
+    <br />
+    <div>
+      <a href="/">Go back to home</a>
+      <a href="/spatis/<%=spati.id%>/edit">Edit</a>
+    </div>
+    <br />
+    <div>
+      <form action="/spatis/<%=spati.id%>?_method=DELETE" method="POST">
+        <button>Delete Spati</button>
+      </form>
+    </div>
   </body>
 </html>
