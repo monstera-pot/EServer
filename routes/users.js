@@ -66,6 +66,7 @@ userRouter
       req.flash("success", "Successfully logged in !");
       console.log("req.session: ", req.session);
       const redirectUrl = req.session.returnTo || "/";
+      delete req.session.returnTo;
       console.log("redirectUrl: ", redirectUrl);
       res.redirect(redirectUrl);
     }
