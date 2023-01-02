@@ -47,9 +47,6 @@ app.use(logger("dev"));
 // app.use(express.bodyParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-//app.use(cookieParser());
-//app.use(passport.session());
-//app.use(passport.initialize());
 app.use(methodOverride("_method"));
 
 const optionsSession = {
@@ -77,7 +74,6 @@ passport.deserializeUser(User.deserializeUser());
 app.use(express.static(path.join(__dirname, "views")));
 
 app.use((req, res, next) => {
-  console.log(req.session);
   res.locals.currentUser = req.user;
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");

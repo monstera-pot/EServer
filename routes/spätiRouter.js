@@ -1,7 +1,7 @@
 const express = require("express");
 const Spati = require("../models/spati");
 const spatiRouter = express.Router();
-const { isLoggedIn } = require("../MiddlewareIsLoggedIn");
+const { isLoggedIn, isAuthor } = require("../Middleware");
 const authenticate = require("../authenticate");
 
 spatiRouter
@@ -95,16 +95,9 @@ spatiRouter
       .populate("comments")
       .then((spati) => {
         res.statusCode = 200;
-        // if (spati.comments.length === 0) {
-        //res.setHeader("Content-Type", "application/json");
-        // res.json(spati);
         res.render("spatiDetails.ejs", {
-          spati /*, messages: req.flash("info")*/,
+          spati,
         });
-        // }
-        // const commentId = spati.comments.id(req.params.commentId);
-        // res.render("spatiDetails.ejs", { spati, commentId: commentId._id });
-        // console.log(spati.comments);
       })
       .catch((err) => next(err));
   })
@@ -142,7 +135,7 @@ spatiRouter
     }
   );
 
-spatiRouter.route("/:id/edit").get(isLoggedIn, (req, res) => {
+spatiRouter.route("/:id/edit").get(isLoggedIn, isAuthor, (req, res) => {
   const { id } = req.params;
   Spati.findById(id)
     .then((spati) => {
@@ -155,14 +148,16 @@ spatiRouter.route("/:id/edit").get(isLoggedIn, (req, res) => {
 spatiRouter
   .route("/:id/comments")
   .get((req, res, next) => {
+    //const { id } = req.params;
     Spati.findById(req.params.id)
       .populate("comments")
       .then((spati) => {
         if (spati) {
           //check if it exists = non null
           res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json(spati.comments);
+          //res.redirect(`/${id}`);
+          // res.setHeader("Content-Type", "application/json");
+          // res.json(spati.comments);
         } else {
           err = new Error(`Spati ${req.params.id} not found`);
           err.status = 404;

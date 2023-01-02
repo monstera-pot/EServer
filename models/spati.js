@@ -14,10 +14,9 @@ const commentSchema = new Schema(
       required: true,
     },
     author: {
-      type: String,
       required: true,
-      //   type: mongoose.Schema.Types.ObjectId, //instead of String w/author, we store a reference to user documents obj id.
-      //   ref: "User", //this is the model we use
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   {
@@ -27,6 +26,10 @@ const commentSchema = new Schema(
 
 const spatiSchema = new Schema(
   {
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
     title: {
       type: String,
       default: "",

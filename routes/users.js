@@ -2,7 +2,7 @@ const express = require("express");
 const userRouter = express.Router();
 const User = require("../models/user");
 const passport = require("passport");
-const { isLoggedIn } = require("../MiddlewareIsLoggedIn");
+const { isLoggedIn } = require("../Middleware");
 const jwt = require("jsonwebtoken");
 const authenticate = require("../authenticate");
 
@@ -29,7 +29,6 @@ userRouter
   .post((req, res, next) => {
     //New User
     const { username, password, email } = req.body;
-    console.log(req.body);
     User.register(new User({ username, email }), password, (err, user) => {
       //const newUser = new User({ username: req.body.username });
       if (err) {
@@ -64,10 +63,8 @@ userRouter
       res.statusCode = 200;
       res.setHeader("ContentType", "application/json");
       req.flash("success", "Successfully logged in !");
-      console.log("req.session: ", req.session);
       const redirectUrl = req.session.returnTo || "/";
       delete req.session.returnTo;
-      console.log("redirectUrl: ", redirectUrl);
       res.redirect(redirectUrl);
     }
   );
@@ -93,7 +90,6 @@ userRouter
     const { id } = req.params; //we capture id from the req.params
     User.findById(req.params.id).then((user) => {
       res.statusCode = 200;
-      console.log(user);
       res.render("user.ejs", { user });
     });
   })
