@@ -35,19 +35,19 @@ spatiRouter
   .post((req, res, next) => {
     Spati.create(req.body)
       .then((spati) => {
-        req.flash("success", "Successfully added Spati");
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        //res.json(spati);
-        res.redirect(`/`);
+        spati.author = req.user._id;
+        spati
+          .save()
+          .then((spati) => {
+            req.flash("success", "Successfully added Spati");
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "application/json");
+            //res.json(spati);
+            res.redirect(`/`);
+          })
+          .catch((err) => next(err));
       })
       .catch((err) => next(err));
-    //} else {
-    //   err = new Error("Missing fields in request");
-    //   err.status = 404;
-    //   console.log(err);
-    //   return next(err);
-    // }
   })
   .put((req, res) => {
     res.statusCode = 403;
@@ -94,6 +94,7 @@ spatiRouter
     Spati.findById(id)
       .populate("comments")
       .then((spati) => {
+        console.log(spati.author);
         res.statusCode = 200;
         res.render("spatiDetails.ejs", {
           spati,
@@ -107,6 +108,7 @@ spatiRouter
   })
   .put(
     isLoggedIn,
+    isAuthor,
     //verify user matches author
     (req, res, next) => {
       const { id } = req.body;
@@ -121,6 +123,7 @@ spatiRouter
   )
   .delete(
     isLoggedIn,
+    isAuthor,
     //verify if user matches author
     (req, res, next) => {
       Spati.findByIdAndDelete(req.params.id)
@@ -135,7 +138,7 @@ spatiRouter
     }
   );
 
-spatiRouter.route("/:id/edit").get(isLoggedIn, isAuthor, (req, res) => {
+spatiRouter.route("/:id/edit").get(isLoggedIn, (req, res) => {
   const { id } = req.params;
   Spati.findById(id)
     .then((spati) => {

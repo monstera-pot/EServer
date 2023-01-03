@@ -12,12 +12,10 @@ module.exports.isLoggedIn = (req, res, next) => {
 module.exports.isAuthor = (req, res, next) => {
   const { id } = req.params;
   Spati.findById(id).then((spati) => {
-    console.log("**************spati._id is: ", spati._id);
-    console.log("**************req.user is: ", req.user._id);
-    if (!spati._id.equals(req.user._id)) {
-      req.flash("success", "You do not have permission to do that!");
+    if (!spati.author.equals(req.user._id)) {
+      req.flash("success", "No permission!");
       return res.redirect(`/spatis/${id}`);
     }
+    next();
   });
-  next();
 };
