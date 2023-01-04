@@ -3,13 +3,15 @@ const Schema = mongoose.Schema;
 
 const favoriteSchema = new Schema({
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "User",
   },
   spatis: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Spati",
+      type: String,
+      // {
+      //   type: Schema.Types.ObjectId,
+      //   ref: "Spati",
     },
   ],
 });

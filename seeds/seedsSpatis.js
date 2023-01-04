@@ -44,20 +44,3 @@ const seeds = [
 Spati.insertMany(seeds)
   .then((s) => console.log(s))
   .catch((err) => console.log(err));
-
-// {
-//   rating: 5,
-//   text: "THE BEST",
-//   author: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "User",
-//   },
-// },
-// {
-//   rating: 4,
-//   text: "THE BEST MINUS ONE",
-//   author: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "User",
-//   },
-// },

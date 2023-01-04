@@ -7,9 +7,10 @@
     <title>SPATI DETAILS</title>
   </head>
   <body>
+    <nav><%- include('./partials/navbar.ejs'); %></nav>
     <h1>SPATI DETAILS</h1>
     <%= success %>
-    <!-- <p>Name: <= spati.title %></p> -->
+    <p>Name: <%= spati.title %></p>
     <p>Adress: <%=spati.address%></p>
     <p>PLZ: <%=spati.PLZ%></p>
     <p>
@@ -21,6 +22,11 @@
     <% } %>
     <p>Comments:</p>
     <% if (spati.comments !== 0) { %>
+
+    <form action="/favorites/<%=spati._id%>" method="POST">
+      <button>Add to Favorites</button>
+    </form>
+
     <div>
       <% for (let i = 0; i < spati.comments.length; i++) { %>
       <p><%=spati.comments[i].rating%> /5 stars</p>
@@ -63,7 +69,8 @@
     <div>
       <a href="/">Go back to home</a>
     </div>
-    <!--% if (currentUser && spati._id.equals(currentUser._id)) { %-->
+
+    <% if (currentUser && spati.author.equals(currentUser._id)) { %>
     <div>
       <a href="/spatis/<%=spati.id%>/edit">Edit</a>
     </div>
@@ -73,5 +80,6 @@
         <button>Delete Spati</button>
       </form>
     </div>
+    <% } %>
   </body>
 </html>

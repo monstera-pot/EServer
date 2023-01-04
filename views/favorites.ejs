@@ -4,17 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User details</title>
+    <title>Favorites</title>
   </head>
   <body>
     <nav><%- include('./partials/navbar.ejs'); %></nav>
-    <h1>Welcome</h1>
-
-    <p>Name: <%= user.username %></p>
-    <p>Email: <%= user.email%></p>
-    <form action="/users/logout" method="GET">
-      <button type="submit">Log Out</button>
-    </form>
-    <a href="/">All spatis</a>
+    <h1>My Favorites</h1>
+    <% for (let favorite of favorites) { %>
+    <li>favorite</li>
+    <% } %>
   </body>
 </html>

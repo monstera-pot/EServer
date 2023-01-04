@@ -1,37 +1,98 @@
 const express = require("express");
 const favoriteRouter = express.Router();
+const Favorite = require("../models/favorite");
+const { isLoggedIn } = require("../Middleware");
+const user = require("../models/user");
 
 favoriteRouter
   .route("/")
-  .get
-  //verifyUser
-  //find + populate Favorites
-  ()
-  .post
-  //verify User
-  //check if favorite exists already
-  //save favorite
-  ()
-  .put
-  //not suppported
-  ()
-  .delete
-  //verifyUser
-  //find + delete
-  ();
+  .get((req, res, next) => {
+    Favorite.find()
+      .populate("user")
+      .populate("spatis")
+      .then((favorites) => {
+        console.log("Favorites found!", favorites);
+        //res.render("favorites.ejs", { favorites });
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(favorites);
+      })
+      .catch((err) => next(err));
+  })
+  .post((req, res, next) => {
+    //user has already a favorite document
+    Favorite.findOne({ user: req.user._id }).then((favorite) => {
+      console.log("USER IS:", favorite.user);
+      if (favorite) {
+        console.log("Favorite is: ", favorite);
+        //user + array of favs
+        //req.body.forEach((fv) => {
+        //  if (!favorite.spatis.includes(fv._id)) {
+        Favorite.push(favorite._id)
+          .save()
+          .then((favorite) => {
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "application/json");
+            res.json(favorite);
+          })
+          .catch((err) => next(err));
+      } else {
+        //we create document from scratch:
+        Favorite.create({ user: req.user._id }).then((favorite) => {
+          favorite.spatis.push(req.body.spatis);
+          // req.body.forEach((fv) => {
+          //   favorite.spatis.push(fv._id);
+        });
+        favorite.save().then((favorite) => {
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.json(favorite);
+        });
+      }
+    });
+  });
+
+// .put
+//not suppported
+//()
+//.delete
+//verifyUser
+//find + delete
+//();
 
 favoriteRouter
-  .route("/favorites/:spatiId")
-  .get
-  //display favorite
-  ()
-  .post
-  //verifyUser
-  //check if already added
-  //add favorite
-  ()
-  .delete
-  //verifyuser
-  //check if favorites exist
-  //delete favorite
-  ();
+  .route("/:id")
+  .get(isLoggedIn, (req, res, next) => {
+    Favorite.find({ user: req.user._id })
+      .then((favorites) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "Applicaction/json");
+        res.json(favorites);
+      })
+      .catch((err) => next(err));
+  })
+  //display favorite // not supported
+  //perhaps redirect to spatis/spatiId
+  // ()
+  .post(isLoggedIn, (req, res, next) => {
+    const { id } = req.params;
+    Favorite.findOne({ user: req.user._id }).then((favorite) => {
+      favorite.spatis.push(id);
+      favorite.save().then((favorite) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "Applicaction/json");
+        res.json(favorite);
+      });
+    });
+  });
+//verifyUser
+//check if already added
+//add favorite
+// ()
+// .delete
+//verifyuser
+//check if favorites exist
+//delete favorite
+// ();
+
+module.exports = favoriteRouter;

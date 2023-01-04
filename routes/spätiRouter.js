@@ -14,25 +14,24 @@ spatiRouter
     if (viertel) {
       Spati.find({ viertel }).then((spatis) => {
         res.statusCode = 200;
-        res.render("index.ejs", {
-          spatis,
-          viertel,
-          //messages: req.flash("info"),
-        });
+        res
+          .render("index.ejs", {
+            spatis,
+            viertel,
+            //messages: req.flash("info"),
+          })
+          .catch((err) => next(err));
       });
     } else {
       Spati.find()
         .then((spatis) => {
           res.statusCode = 200;
-          // res.setHeader("Content-Type", "application/json");
-          // res.json(spatis);
           res.render("index.ejs", { spatis, viertel: "All" });
         })
         .catch((err) => next(err));
     }
-    //ordered by distance?
   })
-  .post((req, res, next) => {
+  .post(isLoggedIn, (req, res, next) => {
     Spati.create(req.body)
       .then((spati) => {
         spati.author = req.user._id;
@@ -42,7 +41,6 @@ spatiRouter
             req.flash("success", "Successfully added Spati");
             res.statusCode = 200;
             res.setHeader("Content-Type", "application/json");
-            //res.json(spati);
             res.redirect(`/`);
           })
           .catch((err) => next(err));
@@ -94,7 +92,6 @@ spatiRouter
     Spati.findById(id)
       .populate("comments")
       .then((spati) => {
-        console.log(spati.author);
         res.statusCode = 200;
         res.render("spatiDetails.ejs", {
           spati,
@@ -106,37 +103,25 @@ spatiRouter
     res.statusCode = 403;
     res.end(`POST operation not supported on /spatis/${req.params.id}`);
   })
-  .put(
-    isLoggedIn,
-    isAuthor,
-    //verify user matches author
-    (req, res, next) => {
-      const { id } = req.body;
-      Spati.findOneAndReplace(id, req.body, { runValidators: true }).then(
-        (spati) => {
-          res.statusCode = 200;
-          req.flash("success", "Successfully updated Spati");
-          res.redirect(`/spatis/${spati._id}`);
-        }
-      );
-    }
-  )
-  .delete(
-    isLoggedIn,
-    isAuthor,
-    //verify if user matches author
-    (req, res, next) => {
-      Spati.findByIdAndDelete(req.params.id)
-        .then((response) => {
-          res.statusCode = 200;
-          // res.setHeader("Content-Type", "application/json");
-          // res.json(response);
-          req.flash("success", "Successfully deleted Späti");
-          res.redirect("/");
-        })
-        .catch((err) => next(err));
-    }
-  );
+  .put(isLoggedIn, isAuthor, (req, res, next) => {
+    const { id } = req.body;
+    Spati.findOneAndReplace(id, req.body, { runValidators: true })
+      .then((spati) => {
+        res.statusCode = 200;
+        req.flash("success", "Successfully updated Spati");
+        res.redirect(`/spatis/${spati._id}`);
+      })
+      .catch((err) => next(err));
+  })
+  .delete(isLoggedIn, isAuthor, (req, res, next) => {
+    Spati.findByIdAndDelete(req.params.id)
+      .then((response) => {
+        res.statusCode = 200;
+        req.flash("success", "Successfully deleted Späti");
+        res.redirect("/");
+      })
+      .catch((err) => next(err));
+  });
 
 spatiRouter.route("/:id/edit").get(isLoggedIn, (req, res) => {
   const { id } = req.params;
@@ -267,20 +252,22 @@ spatiRouter
   )
   .delete(isLoggedIn, (req, res, next) => {
     const { id } = req.params;
-    Spati.findById(req.params.id).then((spati) => {
-      spati.comments.id(req.params.commentId).remove();
-      spati
-        .save()
-        .then((spati) => {
-          const commentId = spati.comments.id(req.params.commentId);
-          res.statusCode = 200;
-          req.flash("success", "Successfully deleted comment");
-          res.redirect(`/spatis/${id}`);
-          // res.setHeader("Content-Type", "application/json");
-          // res.json(spati);
-        })
-        .catch((err) => next(err));
-    });
+    Spati.findById(req.params.id)
+      .then((spati) => {
+        spati.comments.id(req.params.commentId).remove();
+        spati
+          .save()
+          .then((spati) => {
+            const commentId = spati.comments.id(req.params.commentId);
+            res.statusCode = 200;
+            req.flash("success", "Successfully deleted comment");
+            res.redirect(`/spatis/${id}`);
+            // res.setHeader("Content-Type", "application/json");
+            // res.json(spati);
+          })
+          .catch((err) => next(err));
+      })
+      .catch((err) => next(err));
   });
 
 module.exports = spatiRouter;
