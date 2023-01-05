@@ -8,10 +8,8 @@ const favoriteSchema = new Schema({
   },
   spatis: [
     {
-      type: String,
-      // {
-      //   type: Schema.Types.ObjectId,
-      //   ref: "Spati",
+      type: Schema.Types.ObjectId,
+      ref: "Spati",
     },
   ],
 });

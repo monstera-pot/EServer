@@ -9,8 +9,17 @@
   <body>
     <nav><%- include('./partials/navbar.ejs'); %></nav>
     <h1>My Favorites</h1>
-    <% for (let favorite of favorites) { %>
-    <li>favorite</li>
-    <% } %>
+    <%= success %>
+    <ul>
+      <% for (let favorite of favorites) { %>
+      <li><a href="/spatis/<%= favorite._id  %>"><%=favorite.title%></a></li>
+      <% } %>
+    </ul>
+
+    <a href="/spatis/new">Create new</a>
+
+    <!-- % if ( viertel !== "All") { %>
+    <a href="/">All spatis</a>
+    < } %> -->
   </body>
 </html>
