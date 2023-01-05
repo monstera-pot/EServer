@@ -5,15 +5,15 @@ const { isLoggedIn } = require("../Middleware");
 const user = require("../models/user");
 
 favoriteRouter.route("/").get((req, res, next) => {
-  Favorite.find()
+  Favorite.findOne({ user: req.user._id })
     .populate("user")
     .populate("spatis")
     .then((favorites) => {
       console.log("Favorites document:", favorites);
-      res.render("favorites.ejs", { favorites });
-      res.statusCode = 200;
+      res.render("favorites.ejs", { spatis: favorites.spatis });
+      //res.statusCode = 200;
       //res.setHeader("Content-Type", "application/json");
-      //res.json(favorites);
+      //res.json(favorites.spatis);
     })
     .catch((err) => next(err));
 });

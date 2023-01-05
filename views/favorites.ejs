@@ -10,9 +10,10 @@
     <nav><%- include('./partials/navbar.ejs'); %></nav>
     <h1>My Favorites</h1>
     <%= success %>
+
     <ul>
-      <% for (let favorite of favorites) { %>
-      <li><a href="/spatis/<%= favorite._id  %>"><%=favorite.title%></a></li>
+      <% for (let spati of spatis) { %>
+      <li><a href="/spatis/<%=spati._id%>"><%=spati.title%></a></li>
       <% } %>
     </ul>
 
