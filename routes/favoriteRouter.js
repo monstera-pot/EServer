@@ -82,14 +82,15 @@ favoriteRouter
       } else {
         favorite.save().then((favorite) => {
           if (favorite.spatis.includes(req.params.id)) {
-            res.setHeader("Content-Type", "text/plain");
-            res.end("That campsite is already in the list of favorites!");
+            res.redirect(`/spatis/${req.params.id}`);
           } else {
             favorite.spatis.push(req.params.id);
             favorite.save().then((favorite) => {
-              res.statusCode = 200;
-              res.setHeader("Content-Type", "application/json");
-              res.json(favorite);
+              req.flash("success", "Spati successfully added to favorites");
+              res.redirect("/favorites");
+              //res.statusCode = 200;
+              //res.setHeader("Content-Type", "application/json");
+              //res.json(favorite);
             });
           }
         });
