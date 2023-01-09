@@ -64,6 +64,7 @@ userRouter
       res.setHeader("ContentType", "application/json");
       req.flash("success", "Successfully logged in !");
       const redirectUrl = req.session.returnTo || "/";
+      console.log("RedirectURL: ", redirectUrl);
       delete req.session.returnTo;
       res.redirect(redirectUrl);
     }

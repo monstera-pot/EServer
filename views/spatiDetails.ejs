@@ -20,12 +20,11 @@
     <% if (spati.isAccessible) { %>
     <p>Is Accessible</p>
     <% } %>
-    <p>Comments:</p>
-    <% if (spati.comments !== 0) { %>
-
     <form action="/favorites/<%=spati._id%>" method="POST">
       <button>Add to Favorites</button>
     </form>
+    <p>Comments:</p>
+    <% if (spati.comments !== 0) { %>
 
     <div>
       <% for (let i = 0; i < spati.comments.length; i++) { %>

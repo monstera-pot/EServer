@@ -9,13 +9,15 @@
   <body>
     <nav><%- include('./partials/navbar.ejs'); %></nav>
     <h1>My Favorites</h1>
-    <%= success %>
-
+    <%= success %> <% if (spatis.length === 0) { %>
+    <p>You have no favorites added yet</p>
+    <% } else {%>
     <ul>
       <% for (let spati of spatis) { %>
       <li><a href="/spatis/<%=spati._id%>"><%=spati.title%></a></li>
       <% } %>
     </ul>
+    <% } %>
 
     <a href="/spatis/new">Create new</a>
 

@@ -4,7 +4,7 @@ const Favorite = require("../models/favorite");
 const { isLoggedIn } = require("../Middleware");
 const user = require("../models/user");
 
-favoriteRouter.route("/").get((req, res, next) => {
+favoriteRouter.route("/").get(isLoggedIn, (req, res, next) => {
   Favorite.findOne({ user: req.user._id })
     .populate("user")
     .populate("spatis")
@@ -60,28 +60,24 @@ favoriteRouter.route("/").get((req, res, next) => {
 */
 favoriteRouter
   .route("/:id")
-  /*.get(isLoggedIn, (req, res, next) => {
-    Favorite.find({ user: req.user._id })
-      .then((favorites) => {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "Applicaction/json");
-        res.json(favorites);
-      })
-      .catch((err) => next(err));
-  }) */
-  //display favorite // not supported
-  //perhaps redirect to spatis/spatiId
-  // ()
   .post(isLoggedIn, (req, res, next) => {
     const { id } = req.params;
     Favorite.findOne({ user: req.user._id }).then((favorite) => {
       if (!favorite) {
         Favorite.create({ user: req.user._id }).then((fav) => {
-          fav.spatis.push(fav._id).save();
+          fav.spatis
+            .push(fav._id)
+            .save()
+            .then((favorite) => {
+              req.flash("success", "Spati successfully added to favorites");
+              res.redirect("/favorites");
+            });
         });
       } else {
+        console.log("Favorite is: ", favorite);
         favorite.save().then((favorite) => {
           if (favorite.spatis.includes(req.params.id)) {
+            req.flash("success", "Spati is already a favorite");
             res.redirect(`/spatis/${req.params.id}`);
           } else {
             favorite.spatis.push(req.params.id);
@@ -96,12 +92,24 @@ favoriteRouter
         });
       }
     });
+  })
+  .delete(isLoggedIn, (req, res, next) => {
+    const { id } = req.params;
+    Favorite.findOne({ user: req.user._id })
+      .then((favorite) => {
+        const favIndex = favorite.spatis.indexOf(id);
+        favorite.spatis.splice(favIndex, 1);
+        favorite
+          .save()
+          .then((favorite) => {
+            res.statusCode = 200;
+            req.flash("success", "Spati is already a favorite");
+            res.redirect("/favorites");
+          })
+          .catch((err) => next(err));
+      })
+      .catch((err) => next(err));
   });
-//verifyUser
-//check if already added
-//add favorite
-// ()
-// .delete
 //verifyuser
 //check if favorites exist
 //delete favorite
