@@ -11,55 +11,15 @@ favoriteRouter.route("/").get(isLoggedIn, (req, res, next) => {
     .then((favorites) => {
       console.log("Favorites document:", favorites);
       res.render("favorites.ejs", { spatis: favorites.spatis });
-      //res.statusCode = 200;
-      //res.setHeader("Content-Type", "application/json");
-      //res.json(favorites.spatis);
     })
     .catch((err) => next(err));
 });
-//.post((req, res, next) => {
-//user has already a favorite document
-//Favorite.findOne({ user: req.user._id }).then((favorite) => {
-//console.log("USER IS:", favorite.user);
-/*  if (favorite) {
-        console.log("Favorite is: ", favorite);
-        //user + array of favs
-        //req.body.forEach((fv) => {
-        //  if (!favorite.spatis.includes(fv._id)) {
-        Favorite.push(favorite._id)
-          .save()
-          .then((favorite) => {
-            res.statusCode = 200;
-            res.setHeader("Content-Type", "application/json");
-            res.json(favorite);
-          })
-          .catch((err) => next(err));
-      } else {
-        //we create document from scratch:
-        Favorite.create({ user: req.user._id }).then((favorite) => {
-          favorite.spatis.push(req.body.spatis);
-          // req.body.forEach((fv) => {
-          //   favorite.spatis.push(fv._id);
-        });
-        favorite.save().then((favorite) => {
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json(favorite);
-        });
-      }
-    });
-  });
 
-// .put
-//not suppported
-//()
-//.delete
-//verifyUser
-//find + delete
-//();
-*/
 favoriteRouter
   .route("/:id")
+  // .get((req, res, next) => {
+  //   res.redirect("/favorites");
+  // })
   .post(isLoggedIn, (req, res, next) => {
     const { id } = req.params;
     Favorite.findOne({ user: req.user._id }).then((favorite) => {
@@ -74,19 +34,15 @@ favoriteRouter
             });
         });
       } else {
-        console.log("Favorite is: ", favorite);
         favorite.save().then((favorite) => {
-          if (favorite.spatis.includes(req.params.id)) {
+          if (favorite.spatis.includes(id)) {
             req.flash("success", "Spati is already a favorite");
-            res.redirect(`/spatis/${req.params.id}`);
+            res.redirect(`/spatis/${id}`);
           } else {
-            favorite.spatis.push(req.params.id);
+            favorite.spatis.push(id);
             favorite.save().then((favorite) => {
               req.flash("success", "Spati successfully added to favorites");
               res.redirect("/favorites");
-              //res.statusCode = 200;
-              //res.setHeader("Content-Type", "application/json");
-              //res.json(favorite);
             });
           }
         });
@@ -103,16 +59,12 @@ favoriteRouter
           .save()
           .then((favorite) => {
             res.statusCode = 200;
-            req.flash("success", "Spati is already a favorite");
+            req.flash("success", "Spati successfully deleted");
             res.redirect("/favorites");
           })
           .catch((err) => next(err));
       })
       .catch((err) => next(err));
   });
-//verifyuser
-//check if favorites exist
-//delete favorite
-// ();
 
 module.exports = favoriteRouter;

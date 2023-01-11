@@ -1,4 +1,5 @@
 const Spati = require("./models/spati");
+const Favorite = require("./models/favorite");
 
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
@@ -18,4 +19,18 @@ module.exports.isAuthor = (req, res, next) => {
     }
     next();
   });
+};
+
+module.exports.isFavorite = (req, res, next) => {
+  //const { id } = req.params;
+  if (req.user) {
+    Favorite.findOne({ user: req.user._id }).then((favorite) => {
+      console.log(favorite);
+      if (favorite.spatis.includes(req.params.id)) {
+        req.isFavorite = true;
+        res.locals.isFavorite = true;
+      }
+    });
+  }
+  next();
 };

@@ -1,5 +1,6 @@
 const express = require("express");
 const Spati = require("../models/spati");
+const Favorite = require("../models/favorite");
 const spatiRouter = express.Router();
 const { isLoggedIn, isAuthor } = require("../Middleware");
 const authenticate = require("../authenticate");
@@ -12,16 +13,16 @@ spatiRouter
     //check if there's a query
     const { viertel } = req.query;
     if (viertel) {
-      Spati.find({ viertel }).then((spatis) => {
-        res.statusCode = 200;
-        res
-          .render("index.ejs", {
+      Spati.find({ viertel })
+        .then((spatis) => {
+          res.statusCode = 200;
+          res.render("index.ejs", {
             spatis,
             viertel,
             //messages: req.flash("info"),
-          })
-          .catch((err) => next(err));
-      });
+          });
+        })
+        .catch((err) => next(err));
     } else {
       Spati.find()
         .then((spatis) => {
@@ -87,17 +88,36 @@ spatiRouter.route("/new").get(isLoggedIn, (req, res) => {
 spatiRouter
   .route("/:id")
   .get((req, res, next) => {
-    //get spati + indications + tags
     const { id } = req.params;
-    Spati.findById(id)
-      .populate("comments")
-      .then((spati) => {
-        res.statusCode = 200;
-        res.render("spatiDetails.ejs", {
-          spati,
-        });
-      })
-      .catch((err) => next(err));
+    if (req.user) {
+      Favorite.findOne({ user: req.user._id }).then((favorite) => {
+        if (favorite.spatis.includes(req.params.id)) {
+          Spati.findById(id)
+            .populate("comments")
+            .populate("comments.author")
+            .then((spati) => {
+              res.statusCode = 200;
+              res.render("spatiDetails.ejs", {
+                spati,
+                isFavorite: true,
+              });
+            })
+            .catch((err) => next(err));
+        }
+      });
+    } else {
+      Spati.findById(id)
+        .populate("comments")
+        .populate("comments.author")
+        .then((spati) => {
+          res.statusCode = 200;
+          res.render("spatiDetails.ejs", {
+            spati,
+            isFavorite: false,
+          });
+        })
+        .catch((err) => next(err));
+    }
   })
   .post((req, res) => {
     res.statusCode = 403;
@@ -136,18 +156,18 @@ spatiRouter.route("/:id/edit").get(isLoggedIn, (req, res) => {
 spatiRouter
   .route("/:id/comments")
   .get((req, res, next) => {
-    //const { id } = req.params;
-    Spati.findById(req.params.id)
+    const { id } = req.params;
+    Spati.findById(id)
       .populate("comments")
       .then((spati) => {
         if (spati) {
           //check if it exists = non null
           res.statusCode = 200;
-          //res.redirect(`/${id}`);
+          //res.redirect(`/spatis/${id}`);
           // res.setHeader("Content-Type", "application/json");
           // res.json(spati.comments);
         } else {
-          err = new Error(`Spati ${req.params.id} not found`);
+          err = new Error(`Spati ${id} not found`);
           err.status = 404;
           return next(err);
         }
@@ -159,13 +179,14 @@ spatiRouter
     //add verify user
     (req, res, next) => {
       const { id } = req.params;
-      Spati.findById(req.params.id)
+      Spati.findById(id)
         .then((spati) => {
           if (spati) {
-            //req.body.author = req.user._id; //saves comment + getting user id to populate author's field
+            req.body.author = req.user._id; //saves comment + getting user id to populate author's field
             spati.comments.push(req.body);
             spati
               .save() //saving to db
+
               .then((spati) => {
                 res.statusCode = 200;
                 req.flash("success", "Successfully added comment");
@@ -175,7 +196,7 @@ spatiRouter
               })
               .catch((err) => next(err));
           } else {
-            err = new Error(`Spati ${req.params.id} not found`);
+            err = new Error(`Spati ${id} not found`);
             err.status = 404;
             return next(err);
           }
@@ -219,7 +240,7 @@ spatiRouter
   .get((req, res, next) => {
     //get spati id
     const { id } = req.params;
-    Spati.findById(req.params.id)
+    Spati.findById(id)
       //      .populate("comments.author")
       //.populate("comments")
       .then((spati) => {

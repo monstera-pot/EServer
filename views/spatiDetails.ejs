@@ -20,16 +20,28 @@
     <% if (spati.isAccessible) { %>
     <p>Is Accessible</p>
     <% } %>
+    <br />
+
+    <p>isFavorite: <%= isFavorite %></p>
+    <!-- 
+    < if (isFavorite) { %>
+    <form action="/favorites/<%=spati._id%>?_method=DELETE" method="POST">
+      <button>Remove from favorites</button>
+    </form>
+    < } else {%>
     <form action="/favorites/<%=spati._id%>" method="POST">
       <button>Add to Favorites</button>
     </form>
-    <p>Comments:</p>
-    <% if (spati.comments !== 0) { %>
+    < } %> -->
 
+    <p>Comments:</p>
+    <% if (spati.comments.length !== 0) { %>
     <div>
       <% for (let i = 0; i < spati.comments.length; i++) { %>
       <p><%=spati.comments[i].rating%> /5 stars</p>
-      <p>"<%=spati.comments[i].text%>" - <%=spati.comments[i].author%></p>
+      <p>
+        "<%=spati.comments[i].text%>" - <%=spati.comments[i].author.username%>
+      </p>
       <form
         action="/spatis/<%= spati._id %>/comments/<%=spati.comments[i].id%>?_method=DELETE"
         method="POST"
@@ -37,7 +49,9 @@
         <button>Delete Comment</button>
       </form>
     </div>
-    <% } %> <% } %>
+    <% } %> <% } else {%>
+    <p>Be the first to comment !</p>
+    <% } %>
 
     <p>Leave a comment:</p>
     <form action="/spatis/<%= spati._id %>/comments" method="POST">
@@ -55,12 +69,12 @@
         </li>
         <li>
           <label for="text">Leave a comment: </label>
-          <input type="text" name="text" id="text" rows="5" />
+          <br />
+          <textarea type="text" name="text" id="text" rows="3"></textarea>
         </li>
-        <li>
-          <label for="author">Enter your name: </label>
-          <input type="text" name="author" id="author" />
-        </li>
+        <!-- <li>
+          <p>Post as <=currentUser.username%></p>
+        </li> -->
       </ul>
       <button type="submit">Submit</button>
     </form>
