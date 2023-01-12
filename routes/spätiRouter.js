@@ -2,7 +2,7 @@ const express = require("express");
 const Spati = require("../models/spati");
 const Favorite = require("../models/favorite");
 const spatiRouter = express.Router();
-const { isLoggedIn, isAuthor } = require("../Middleware");
+const { isLoggedIn, isAuthor, isFavorite } = require("../Middleware");
 const authenticate = require("../authenticate");
 
 spatiRouter
@@ -89,35 +89,17 @@ spatiRouter
   .route("/:id")
   .get((req, res, next) => {
     const { id } = req.params;
-    if (req.user) {
-      Favorite.findOne({ user: req.user._id }).then((favorite) => {
-        if (favorite.spatis.includes(req.params.id)) {
-          Spati.findById(id)
-            .populate("comments")
-            .populate("comments.author")
-            .then((spati) => {
-              res.statusCode = 200;
-              res.render("spatiDetails.ejs", {
-                spati,
-                isFavorite: true,
-              });
-            })
-            .catch((err) => next(err));
-        }
-      });
-    } else {
-      Spati.findById(id)
-        .populate("comments")
-        .populate("comments.author")
-        .then((spati) => {
-          res.statusCode = 200;
-          res.render("spatiDetails.ejs", {
-            spati,
-            isFavorite: false,
-          });
-        })
-        .catch((err) => next(err));
-    }
+    Spati.findById(id)
+      .populate("comments")
+      .populate("comments.author")
+      .then((spati) => {
+        res.statusCode = 200;
+        res.render("spatiDetails.ejs", {
+          spati,
+          isFavorite: false,
+        });
+      })
+      .catch((err) => next(err));
   })
   .post((req, res) => {
     res.statusCode = 403;
@@ -245,14 +227,15 @@ spatiRouter
       //.populate("comments")
       .then((spati) => {
         res.statusCode = 200;
+        res.render("spatiDetails.ejs", { spati });
         //res.json(spati.comments.id(req.params.commentId));
-        const commentId = spati.comments.id(req.params.commentId);
+        //const commentId = spati.comments.id(req.params.commentId);
         //res.setHeader("Content-Type", "application/json");
         // res.json(spati);
-        res.render("commentDetail.ejs", {
-          spati,
-          commentId: commentId._id,
-        });
+        // res.render("commentDetail.ejs", {
+        //   spati,
+        //   commentId: commentId._id,
+        // });
       })
       .catch((err) => next(err));
   })

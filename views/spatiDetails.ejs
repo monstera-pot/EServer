@@ -19,21 +19,16 @@
     </p>
     <% if (spati.isAccessible) { %>
     <p>Is Accessible</p>
-    <% } %>
-    <br />
-
-    <p>isFavorite: <%= isFavorite %></p>
-    <!-- 
-    < if (isFavorite) { %>
+    <% } %> <% if (!currentUser) {%>
+    <p>Log in to add this späti to your favorites !</p>
+    <% } else {%>
     <form action="/favorites/<%=spati._id%>?_method=DELETE" method="POST">
       <button>Remove from favorites</button>
     </form>
-    < } else {%>
     <form action="/favorites/<%=spati._id%>" method="POST">
       <button>Add to Favorites</button>
     </form>
-    < } %> -->
-
+    <% } %>
     <p>Comments:</p>
     <% if (spati.comments.length !== 0) { %>
     <div>
@@ -42,6 +37,7 @@
       <p>
         "<%=spati.comments[i].text%>" - <%=spati.comments[i].author.username%>
       </p>
+      <% if (currentUser._id.equals(spati.comments[i].author._id)) { %>
       <form
         action="/spatis/<%= spati._id %>/comments/<%=spati.comments[i].id%>?_method=DELETE"
         method="POST"
@@ -49,7 +45,7 @@
         <button>Delete Comment</button>
       </form>
     </div>
-    <% } %> <% } else {%>
+    <% } %> <% } %> <% } else {%>
     <p>Be the first to comment !</p>
     <% } %>
 
