@@ -4,6 +4,10 @@ const Favorite = require("../models/favorite");
 const spatiRouter = express.Router();
 const { isLoggedIn, isAuthor, isFavorite } = require("../Middleware");
 const authenticate = require("../authenticate");
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+require("dotenv").config();
+const mapboxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapboxToken });
 
 spatiRouter
   .route("/")
@@ -32,21 +36,30 @@ spatiRouter
         .catch((err) => next(err));
     }
   })
-  .post(isLoggedIn, (req, res, next) => {
-    Spati.create(req.body)
-      .then((spati) => {
-        spati.author = req.user._id;
-        spati
-          .save()
-          .then((spati) => {
-            req.flash("success", "Successfully added Spati");
-            res.statusCode = 200;
-            res.setHeader("Content-Type", "application/json");
-            res.redirect(`/`);
-          })
-          .catch((err) => next(err));
+  .post(isLoggedIn, async (req, res, next) => {
+    const georesponse = await geocoder
+      .forwardGeocode({
+        query: "12053, Berlin",
+        countries: ["de"],
+        limit: 1,
       })
-      .catch((err) => next(err));
+      .send();
+    console.log(georesponse.body.features[0].geometry.coordinates);
+    res.send("FOUND! ");
+    // Spati.create(req.body)
+    //   .then((spati) => {
+    //     spati.author = req.user._id;
+    //     spati
+    //       .save()
+    //       .then((spati) => {
+    //         req.flash("success", "Successfully added Spati");
+    //         res.statusCode = 200;
+    //         res.setHeader("Content-Type", "application/json");
+    //         res.redirect(`/`);
+    //       })
+    //       .catch((err) => next(err));
+    //   })
+    //   .catch((err) => next(err));
   })
   .put((req, res) => {
     res.statusCode = 403;
@@ -96,7 +109,6 @@ spatiRouter
         res.statusCode = 200;
         res.render("spatiDetails.ejs", {
           spati,
-          isFavorite: false,
         });
       })
       .catch((err) => next(err));

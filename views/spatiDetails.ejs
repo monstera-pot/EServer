@@ -30,23 +30,22 @@
     </form>
     <% } %>
     <p>Comments:</p>
-    <% if (spati.comments.length !== 0) { %>
-    <div>
-      <% for (let i = 0; i < spati.comments.length; i++) { %>
-      <p><%=spati.comments[i].rating%> /5 stars</p>
-      <p>
-        "<%=spati.comments[i].text%>" - <%=spati.comments[i].author.username%>
-      </p>
-      <% if (currentUser._id.equals(spati.comments[i].author._id)) { %>
-      <form
-        action="/spatis/<%= spati._id %>/comments/<%=spati.comments[i].id%>?_method=DELETE"
-        method="POST"
-      >
-        <button>Delete Comment</button>
-      </form>
-    </div>
+    <% if ( spati.comments.length > 0 ) {%> <% for (let i = 0; i <
+    spati.comments.length; i++) {%>
+    <p><%= spati.comments[i].rating %> /5 stars</p>
+    <p>
+      "<%= spati.comments[i].text %>" - <%= spati.comments[i].author.username %>
+    </p>
+    <% if (currentUser && currentUser._id.equals(spati.comments[i].author._id))
+    {%>
+    <form
+      action="/spatis/<%= spati._id %>/comments/<%=spati.comments[i].id%>?_method=DELETE"
+      method="POST"
+    >
+      <button>Delete Comment</button>
+    </form>
     <% } %> <% } %> <% } else {%>
-    <p>Be the first to comment !</p>
+    <p>Be the first to leave a comment !</p>
     <% } %>
 
     <p>Leave a comment:</p>
@@ -68,9 +67,6 @@
           <br />
           <textarea type="text" name="text" id="text" rows="3"></textarea>
         </li>
-        <!-- <li>
-          <p>Post as <=currentUser.username%></p>
-        </li> -->
       </ul>
       <button type="submit">Submit</button>
     </form>
@@ -81,11 +77,11 @@
 
     <% if (currentUser && spati.author.equals(currentUser._id)) { %>
     <div>
-      <a href="/spatis/<%=spati.id%>/edit">Edit</a>
+      <a href="/spatis/%=spati.id%>/edit">Edit</a>
     </div>
     <br />
     <div>
-      <form action="/spatis/<%=spati.id%>?_method=DELETE" method="POST">
+      <form action="/spatis/%=spati.id%>?_method=DELETE" method="POST">
         <button>Delete Spati</button>
       </form>
     </div>
