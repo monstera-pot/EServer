@@ -8,12 +8,8 @@ const authenticate = require("../authenticate");
 
 /* GET users listing. */
 userRouter.get("/", function (req, res, next) {
-  //show all users
-  //I should check if Admin
   User.find().then((users) => {
     res.statusCode = 200;
-    //res.setHeader("Content-Type", "application/json");
-    //res.json(users);
     res.render("users.ejs", { users });
   });
 });

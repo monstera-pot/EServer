@@ -46,8 +46,7 @@
     </form>
     <% } %> <% } %> <% } else {%>
     <p>Be the first to leave a comment !</p>
-    <% } %>
-
+    <% } %> <% if (currentUser) { %>
     <p>Leave a comment:</p>
     <form action="/spatis/<%= spati._id %>/comments" method="POST">
       <ul>
@@ -70,6 +69,9 @@
       </ul>
       <button type="submit">Submit</button>
     </form>
+    <% } else { %>
+    <p>Log in to leave a comment</p>
+    <% } %>
     <br />
     <div>
       <a href="/">Go back to home</a>
@@ -77,11 +79,11 @@
 
     <% if (currentUser && spati.author.equals(currentUser._id)) { %>
     <div>
-      <a href="/spatis/%=spati.id%>/edit">Edit</a>
+      <a href="/spatis/<%=spati.id%>/edit">Edit</a>
     </div>
     <br />
     <div>
-      <form action="/spatis/%=spati.id%>?_method=DELETE" method="POST">
+      <form action="/spatis/<%=spati.id%>?_method=DELETE" method="POST">
         <button>Delete Spati</button>
       </form>
     </div>
