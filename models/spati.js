@@ -53,6 +53,17 @@ const spatiSchema = new Schema(
       default: "",
       required: true,
     },
+    location: {
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
+      type: {
+        type: String, //{"coordinates":[13.418520000000001,52.500491999999994],"type":"Point"}
+        enum: ["Point"],
+        required: true,
+      },
+    },
     isAccessible: {
       type: Boolean,
       default: true,

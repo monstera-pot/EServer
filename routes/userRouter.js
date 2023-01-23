@@ -24,7 +24,6 @@ userRouter
   );
 
 userRouter.route("/logout").get(users.logout);
-
 userRouter.route("/:id").get(users.showUser);
 
 module.exports = userRouter;

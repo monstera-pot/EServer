@@ -1,4 +1,10 @@
 const Spati = require("../models/spati");
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+require("dotenv").config();
+const mapboxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapboxToken });
+const spatis = require("../controllers/spatis");
+const bodyParser = require("body-parser");
 
 const viertels = [
   "Mitte",
@@ -39,25 +45,27 @@ module.exports.index = (req, res, next) => {
 };
 
 module.exports.createSpati = async (req, res, next) => {
-  //   const georesponse = await geocoder
-  //     .forwardGeocode({
-  //       query: "12053, Berlin",
-  //       countries: ["de"],
-  //       limit: 1,
-  //     })
-  //     .send();
-  //   console.log(georesponse.body.features[0].geometry.coordinates);
-  //   res.send("FOUND! ");
+  const georesponse = await geocoder
+    .forwardGeocode({
+      query: req.body.address,
+      countries: ["DE"],
+      bbox: [13.089806, 52.338294, 13.761113, 52.675408],
+      limit: 1,
+    })
+    .send();
+  //res.send(georesponse.body.features[0].geometry);
   Spati.create(req.body)
     .then((spati) => {
+      console.log(georesponse.body.features[0].geometry);
+      spati.location = georesponse.body.features[0].geometry;
       spati.author = req.user._id;
       spati
         .save()
         .then((spati) => {
           req.flash("success", "Successfully added Spati");
           res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
           res.redirect(`/`);
+          console.log(spati);
         })
         .catch((err) => next(err));
     })

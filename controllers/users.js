@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const authenticate = require("../authenticate");
+const passport = require("passport");
 
 module.exports.showAllUsers = (req, res, next) => {
   User.find().then((users) => {
@@ -10,7 +11,6 @@ module.exports.showAllUsers = (req, res, next) => {
 
 module.exports.showSignupForm = (req, res, next) => {
   res.statusCode = 200;
-  //res.setHeader("Content-Type", "application/json");
   res.render("signupForm.ejs");
 };
 
